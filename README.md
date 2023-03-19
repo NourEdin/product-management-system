@@ -1,6 +1,6 @@
 # Product Management System
 
-This project is being build using Symfony 6 and Vue.js 3.
+This project is being built using Symfony 6 and Vue.js 3 for demonstration purposes.
 
 ## Requirements:
 Before you can run this project, you need Docker to be installed on your machine, along with Docker Compose package
