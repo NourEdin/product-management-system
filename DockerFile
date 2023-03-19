@@ -1,0 +1,30 @@
+FROM php:8.2 as php
+
+COPY --from=composer:2.3.5 /usr/bin/composer /usr/bin/composer
+
+RUN docker-php-ext-install \
+        pdo \
+        pdo_mysql \
+        bcmath \
+        opcache
+
+RUN apt-get update -y && apt-get install -y \
+        zip \
+        unzip \
+        && rm -rf /var/lib/apt/lists/*
+
+ARG uid
+RUN useradd -G root -u $uid -d /home/devuser devuser
+RUN mkdir -p /home/devuser/.composer && \
+    chown -R devuser:devuser /home/devuser
+
+RUN curl -sS https://get.symfony.com/cli/installer | bash
+RUN mv /root/.symfony5/bin/symfony /usr/local/bin/symfony
+
+WORKDIR /app
+
+USER devuser
+
+COPY . .
+
+ENTRYPOINT [ "/app/entrypoint.sh" ]

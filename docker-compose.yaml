@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+  backend:
+    networks:
+    - app
+    build: 
+      context: .
+      dockerfile: ./DockerFile
+      args:
+        uid: ${LOCAL_UID}
+    restart: unless-stopped
+    container_name: pms-backend
+    volumes:
+      - .:/app
+    ports:
+      - "${LOCAL_BACKEND_PORT:-8000}:8000"
+    depends_on:
+      - database
+  
+  database:
+    networks:
+      - app  
+    image: 'mysql:8.0'
+    ports:
+      - '${LOCAL_DB_PORT:-3306}:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: '${DB_ROOT_PASSWORD}'
+      MYSQL_DATABASE: '${DB_DATABASE}'
+      MYSQL_USER: '${DB_USERNAME}'
+      MYSQL_PASSWORD: '${DB_PASSWORD}'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    volumes:
+      - 'db-data:/var/lib/mysql'
+    restart: always
+    container_name: '${DB_HOST}'
+
+networks:
+  app:
+    driver: bridge
+volumes:
+  db-data: ~
