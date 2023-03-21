@@ -1,16 +1,21 @@
 
 <script setup>
 import { ref, computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { useUserStore } from '../stores/user';
 
 const userStore = useUserStore();
+const router = useRouter();
+const route = useRoute();
 
 const username = ref("");
 const password = ref("");
 const error = computed(() => userStore.error)
 
 async function login() {
-  userStore.login(username, password);
+  userStore.login(username.value, password.value, () => {
+    router.push(route.query.redirect || '/')
+  });
 }
 </script>
 

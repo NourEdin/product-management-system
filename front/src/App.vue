@@ -3,19 +3,26 @@ import { computed } from 'vue'
 import { RouterView, RouterLink } from 'vue-router'
 import LocalizedLink from './components/l10n/LocalizedLink.vue';
 import { useI18n } from 'vue-i18n';
-import { languages } from '@/i18n'
+import { languages } from '@/i18n';
+import { useUserStore } from '@/stores/user';
 
 const { locale } = useI18n();
 const navLanguages = computed( () => 
     languages.filter(lang => lang.locale != locale.value)
 )
+const userStore = useUserStore()
+const isLoggedIn = computed(() => userStore.isLoggedIn)
+
 </script>
 
 <template>
   <div id="wrapper">
     <nav>
       <div id="nav-menu">
-        <LocalizedLink class="normal-text" to="/">Home</LocalizedLink>
+        <LocalizedLink class="normal-text" to="/">{{ $t('Home') }}</LocalizedLink>
+        <div v-if="isLoggedIn">
+          <LocalizedLink class="normal-text" to="/products">{{ $t('Products') }}</LocalizedLink>
+        </div>
       </div>
       <div id="user-menu">
         <RouterLink v-for="lang,i in navLanguages " :key="i" class="normal-text" :to="`/${lang.locale}`">{{ lang.label }}</RouterLink>
