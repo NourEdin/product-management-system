@@ -1,16 +1,21 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { getProducts } from '@/services/api';
+import { getProducts, deleteProduct } from '@/services/api';
 import LocalizedLink from '@/components/l10n/LocalizedLink.vue'
 
 const products = ref([])
 
-function deleteProd (id)  {
+function deleteOne (id)  {
   console.log("Deleting product", id);
+  deleteProduct(id, () => getAll());
 }
-onMounted(() => {
+function getAll() {
   getProducts((allProducts) => {products.value = allProducts})
+}
+
+onMounted(() => {
+  getAll()
 })
 
 </script>
@@ -19,7 +24,7 @@ onMounted(() => {
   <main>
     <h1>{{ $t('Products') }}</h1>
     <LocalizedLink :to="`/products/add`">{{ $t("Add New") }}</LocalizedLink>
-    <table>
+    <table v-if="products.length > 0">
       <thead>
         <tr>
           <td>{{ $t('ID') }}</td>
@@ -35,11 +40,14 @@ onMounted(() => {
           <td>{{ product.number }}</td>
           <td>
             <LocalizedLink :to="`/products/edit/${product.id}`">{{ $t("Edit") }}</LocalizedLink>
-            <a href="#" @click="deleteProd(product.id)">{{ $t("Delete") }}</a>
+            <a href="#" @click="deleteOne(product.id)">{{ $t("Delete") }}</a>
           </td>
         </tr>
       </tbody>
     </table>
+    <div v-else>
+      {{ $t("noProducts") }}
+    </div>
     
   </main>
 </template>

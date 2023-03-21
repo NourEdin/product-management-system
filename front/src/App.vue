@@ -1,18 +1,25 @@
 <script setup>
 import { computed } from 'vue'
-import { RouterView, RouterLink } from 'vue-router'
+import { RouterView, RouterLink, useRouter } from 'vue-router'
 import LocalizedLink from './components/l10n/LocalizedLink.vue';
 import { useI18n } from 'vue-i18n';
 import { languages } from '@/i18n';
 import { useUserStore } from '@/stores/user';
 
+
 const { locale } = useI18n();
 const navLanguages = computed( () => 
     languages.filter(lang => lang.locale != locale.value)
 )
+const router = useRouter();
 const userStore = useUserStore()
 const isLoggedIn = computed(() => userStore.isLoggedIn)
 
+function logout() {
+  console.log("Logging user out")
+  userStore.logout()
+  router.push('/')
+}
 </script>
 
 <template>
@@ -26,7 +33,8 @@ const isLoggedIn = computed(() => userStore.isLoggedIn)
       </div>
       <div id="user-menu">
         <RouterLink v-for="lang,i in navLanguages " :key="i" class="normal-text" :to="`/${lang.locale}`">{{ lang.label }}</RouterLink>
-        <LocalizedLink class="normal-text" to="/login">Login</LocalizedLink>
+        <a v-if="isLoggedIn" class="normal-text" href="#" @click.prevent="logout">{{ $t("logout") }}</a>
+        <LocalizedLink v-else class="normal-text" to="/login">{{ $t("login") }}</LocalizedLink>
       </div>
     </nav>
     <RouterView />

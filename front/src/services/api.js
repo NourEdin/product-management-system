@@ -3,34 +3,39 @@ import { useUserStore } from "../stores/user";
 
 const apiBase = import.meta.env.VITE_BACKEND_API_BASE;
 
+//Makes the actual API call using fetch API
 const call = async (endpoint, options) => {
-    const fetchOptions = {
-      method: options.method,
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
+  //Preparing fetch API options
+  const fetchOptions = {
+    method: options.method,
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
     }
-    if (!options.noAuth) {
-      const {token} = useUserStore()
-      fetchOptions.headers["Authorization"] = `Bearer ${token}`
-    }
-    if (options.data) {
-      fetchOptions.body = JSON.stringify(options.data)
-    }
+  }
+  //If noAuth is provided, skip adding the authorization header
+  if (!options.noAuth) {
+    const {token} = useUserStore()
+    fetchOptions.headers["Authorization"] = `Bearer ${token}`
+  }
+  //Append body data only if provided and is not a GET request
+  if (options.data && options.method != 'GET') {
+    fetchOptions.body = JSON.stringify(options.data)
+  }
 
-    const response = await fetch(`${apiBase}${endpoint}`, fetchOptions);
+  const response = await fetch(`${apiBase}${endpoint}`, fetchOptions);
 
-    if (response.status == 200) {
-      if(options.onSuccess)
-        response.json().then(options.onSuccess)
-    } else {
-      if (options.onFailure)
-        response.json().then(options.onFailure)
-    }
+  if (response.status == 200) { //Call onSuccess
+    if(options.onSuccess)
+      response.json().then(options.onSuccess)
+  } else { //Call onFailure
+    if (options.onFailure)
+      response.json().then(options.onFailure)
+  }
 }
+
+//Calls the login endpoint to log in using username and password
 const login = async (username, password, onSuccess, onFailure) => {
-  console.log("Loggin user in ", username, password)
   call(
     'login',
     {
@@ -45,6 +50,7 @@ const login = async (username, password, onSuccess, onFailure) => {
   )
 }
 
+//Fetches the product list
 const getProducts = async (onSuccess, onFailure = null) => {
   call(
     'products',
@@ -55,8 +61,20 @@ const getProducts = async (onSuccess, onFailure = null) => {
     }
   )
 }
+//Calls the API to delete a product
+const deleteProduct = async (id, onSuccess, onFailure = null) => {
+  call(
+    `product/${id}`,
+    {
+      method: 'DELETE',
+      onSuccess,
+      onFailure
+    }
+  )
+}
 
 export {
   login,
-  getProducts
+  getProducts,
+  deleteProduct
 }

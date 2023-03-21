@@ -1,10 +1,10 @@
-import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { login } from '@/services/api'
+import { useStorage } from '@vueuse/core'
 
 export const useUserStore = defineStore('user', {
   state: () => ({
-    token: '',
+    token: useStorage('token', ''),
     error: '',
   }),
   getters: {
@@ -27,6 +27,9 @@ export const useUserStore = defineStore('user', {
         },
         data => me.error = data.message
         )
+    },
+    logout() {
+      this.token = "";
     }
   }
 });
