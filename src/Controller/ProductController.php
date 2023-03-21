@@ -11,8 +11,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ProductController extends AbstractController
 {
-    #[Route('/api/product', name: 'product_list', methods: ['GET'])]
-    public function index(EntityManagerInterface $em): JsonResponse
+    #[Route('/api/products', name: 'product_list', methods: ['GET'])]
+    public function list(EntityManagerInterface $em): JsonResponse
     {
         $products = $em->getRepository(Product::class)->all();
         return $this->json($products);

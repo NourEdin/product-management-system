@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Credential;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -23,7 +24,14 @@ class AppFixtures extends Fixture
             "admin"
         );
         $user->setPassword($hashed);
+
+        $cred = new Credential();
+        $cred->setClientId("test_client_id");
+        $cred->setSecret("test_client_secret");
+        $cred->setUser($user);
+
         $manager->persist($user);
+        $manager->persist($cred);
 
         $manager->flush();
     }

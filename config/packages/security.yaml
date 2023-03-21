@@ -25,6 +25,16 @@ security:
             stateless: true
             jwt: ~
 
+        ext-api-login:
+            pattern: ^/ext-api/login
+            stateless: true
+            security: false
+
+        ext-api:
+            pattern: ^/ext-api
+            stateless: true
+            jwt: ~
+
         main:
             lazy: true
             provider: app_user_provider
