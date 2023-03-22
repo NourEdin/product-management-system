@@ -41,12 +41,10 @@ class ProductRepository extends ServiceEntityRepository
     /**
      * Gets all products except deleted ones
      */
-    public function all($includingDeleted = false) {
-        $builder = $this->createQueryBuilder('p');
-        
-        if (!$includingDeleted) {
-            $builder->andWhere('p.deleted is null OR p.deleted = 0');
-        }
+    public function findAllExceptDeleted() {
+        $builder = $this->createQueryBuilder('p')
+                ->andWhere('p.deleted is null OR p.deleted = 0');
+
            
         return $builder
         ->getQuery()
@@ -55,14 +53,12 @@ class ProductRepository extends ServiceEntityRepository
     /**
      * Finds a product by its id and returns null if it's deleted
      */
-    public function get($id, $includingDeleted = false) {
+    public function findOneExceptDeleted($id) {
         $builder = $this->createQueryBuilder('p')
         ->andWhere('p.id = :id')
-        ->setParameter('id', $id);
+        ->setParameter('id', $id)
+        ->andWhere('p.deleted is null OR p.deleted = 0');
         
-        if (!$includingDeleted) {
-            $builder->andWhere('p.deleted is null OR p.deleted = 0');
-        }
            
         $result = $builder
         ->getQuery()
@@ -71,6 +67,7 @@ class ProductRepository extends ServiceEntityRepository
         if (count($result)) return $result[0];
         return;
     }
+    
 
 //    /**
 //     * @return Product[] Returns an array of Product objects

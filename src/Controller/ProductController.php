@@ -14,7 +14,7 @@ class ProductController extends AbstractController
     #[Route('/api/products', name: 'product_list', methods: ['GET'])]
     public function list(EntityManagerInterface $em): JsonResponse
     {
-        $products = $em->getRepository(Product::class)->all();
+        $products = $em->getRepository(Product::class)->findAllExceptDeleted();
         return $this->json($products);
     }
 
@@ -53,7 +53,7 @@ class ProductController extends AbstractController
         $name = $data["name"] ?? null;
         $number = $data["number"] ?? null;
 
-        $product = $em->getRepository(Product::class)->get($id);
+        $product = $em->getRepository(Product::class)->findOneExceptDeleted($id);
         if (!$product) {
             return $this->json(['code' => 404, 'message' => 'e_notFound'], 404);
         }
@@ -82,7 +82,7 @@ class ProductController extends AbstractController
     #[Route('/api/product/{id}', name: 'product_delete', methods: ['DELETE'])]
     public function delete(EntityManagerInterface $em, int $id): JsonResponse
     {
-        $product = $em->getRepository(Product::class)->get($id);
+        $product = $em->getRepository(Product::class)->findOneExceptDeleted($id);
         if (!$product) {
             return $this->json(['code' => 404, 'message' => 'e_notFound'], 404);
         }
@@ -97,7 +97,7 @@ class ProductController extends AbstractController
     #[Route('/api/product/{id}', name: 'product_get', methods: ['GET'])]
     public function show(EntityManagerInterface $em, int $id): JsonResponse
     {
-        $product = $em->getRepository(Product::class)->get($id);
+        $product = $em->getRepository(Product::class)->findOneExceptDeleted($id);
         if (!$product) {
             return $this->json(['code' => 404, 'message' => 'e_notFound'], 404);
         }
