@@ -2,7 +2,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { getProducts, deleteProduct } from '@/services/api';
-import LocalizedLink from '@/components/l10n/LocalizedLink.vue'
+import { localizePath } from '@/i18n';
 
 const products = ref([])
 
@@ -22,8 +22,10 @@ onMounted(() => {
 
 <template>
   <main>
-    <h1>{{ $t('Products') }}</h1>
-    <LocalizedLink :to="`/products/add`">{{ $t("Add New") }}</LocalizedLink>
+    <h2>{{ $t('Products') }}</h2>
+    <q-btn color="primary" :to="localizePath('/products/add')">
+      {{ $t("Add New") }}
+    </q-btn>
     <table v-if="products.length > 0">
       <thead>
         <tr>
@@ -43,7 +45,7 @@ onMounted(() => {
           <td>{{ product.created_at }}</td>
           <td>{{ product.updated_at }}</td>
           <td>
-            <LocalizedLink :to="`/products/edit/${product.id}`">{{ $t("Edit") }}</LocalizedLink>
+            <router-link :to="localizePath(`/products/edit/${product.id}`)">{{ $t("Edit") }}</router-link>
             <a href="#" @click="deleteOne(product.id)">{{ $t("Delete") }}</a>
           </td>
         </tr>

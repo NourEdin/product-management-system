@@ -1,4 +1,5 @@
 const en = {
+    "appTitle": "Product Management System",
     //Nav
     "Home": "Home",
     "Products": "Products",

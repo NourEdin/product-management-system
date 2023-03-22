@@ -20,21 +20,43 @@ async function login() {
 </script>
 
 <template>
-  <main>
-    <h1>{{ $t('loginTitle') }}</h1>
-    <label for="username">
-      <input id="username" type="text" v-model="username" placeholder="Please enter the username" />
-    </label>
-    <label for="password">
-      <input id="password" type="password" v-model="password" placeholder="Please enter the password" />
-    </label>
-    <p class="error" v-if="error">{{ error }}</p>
-    <button @click="login">Login</button>
-  </main>
+  <q-page id="main">
+    <q-form
+    @submit="login"
+    class="q-gutter-md"
+    >
+      <h2>{{ $t('loginTitle') }}</h2>
+      <p class="error" v-if="error">{{ error }}</p>
+
+      <q-input
+        filled
+        v-model="username"
+        :label="$t('Username')"
+        lazy-rules
+        :rules="[ val => val && val.length > 0 || $t('Please type something')]"
+      />
+
+      <q-input
+        filled
+        type="password"
+        v-model="password"
+        :label="$t('Password')"
+        lazy-rules
+        :rules="[
+          val => val !== null && val !== '' || $t('Please enter a password')
+        ]"
+      />
+      <div>
+        <q-btn label="Submit" type="submit" color="primary"/>
+      </div>
+    </q-form>
+
+  </q-page>
 </template>
 
 <style scoped>
-main {
+#main {
+  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;

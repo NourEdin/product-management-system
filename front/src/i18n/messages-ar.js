@@ -1,4 +1,5 @@
 const ar = {
+    "appTitle": "نظام إدارة المنتجات",
     //Nav
     "Home": "الرئيسية",
     "Products": "المنتجات",

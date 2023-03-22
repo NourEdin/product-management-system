@@ -5,6 +5,8 @@ const apiBase = import.meta.env.VITE_BACKEND_API_BASE;
 
 //Makes the actual API call using fetch API
 const call = async (endpoint, options) => {
+  const userStore = useUserStore();
+
   //Preparing fetch API options
   const fetchOptions = {
     method: options.method,
@@ -15,15 +17,18 @@ const call = async (endpoint, options) => {
   }
   //If noAuth is provided, skip adding the authorization header
   if (!options.noAuth) {
-    const {token} = useUserStore()
-    fetchOptions.headers["Authorization"] = `Bearer ${token}`
+    fetchOptions.headers["Authorization"] = `Bearer ${userStore.token}`
   }
   //Append body data only if provided and is not a GET request
   if (options.data && options.method != 'GET') {
     fetchOptions.body = JSON.stringify(options.data)
   }
 
+  userStore.startLoading();
+
   const response = await fetch(`${apiBase}${endpoint}`, fetchOptions);
+
+  userStore.stopLoading();
 
   if (response.status == 200) { //Call onSuccess
     if(options.onSuccess)
