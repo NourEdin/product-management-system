@@ -3,19 +3,28 @@
 namespace App\Controller;
 
 use App\Entity\Product;
+use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ProductController extends AbstractController
+class ProductController extends ApiController
 {
     #[Route('/api/products', name: 'product_list', methods: ['GET'])]
-    public function list(EntityManagerInterface $em): JsonResponse
+    public function list(ProductRepository $productRepository, Request $request): JsonResponse
     {
-        $products = $em->getRepository(Product::class)->findAllExceptDeleted();
-        return $this->json($products);
+        $options = [
+            "offset" => $request->query->get('offset'),
+            "max" => $request->query->get('max'),
+            "term" => $request->query->get('term'),
+            "sort" => $request->query->get('sort'),
+            "order" => $request->query->get('order'),
+        ];
+
+        $total = $productRepository->getTotalExceptDeleted($options);
+        $products = $productRepository->findAllExceptDeleted($options);
+        return $this->responseOb(["products" => $products, "total" => $total]);
     }
 
     #[Route('/api/product', name: 'product_create', methods: ['POST'])]
