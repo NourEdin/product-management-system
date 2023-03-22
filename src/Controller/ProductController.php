@@ -33,7 +33,7 @@ class ProductController extends AbstractController
         if ($number) {
             $old = $em->getRepository(Product::class)->findOneByNumber($number);
             if ($old) {
-                return $this->json(['code' => 400, 'message' => 'e_duplicateNumber', 'data' => $old]);
+                return $this->json(['code' => 400, 'message' => 'e_duplicateNumber', 'data' => $old], 400);
             }
         }
 
@@ -55,7 +55,7 @@ class ProductController extends AbstractController
 
         $product = $em->getRepository(Product::class)->get($id);
         if (!$product) {
-            return $this->json(['code' => 404, 'message' => 'e_notFound']);
+            return $this->json(['code' => 404, 'message' => 'e_notFound'], 404);
         }
 
         //Validation
@@ -65,8 +65,8 @@ class ProductController extends AbstractController
         //Prevent duplicate product numbers
         if ($number) {
             $old = $em->getRepository(Product::class)->findOneByNumber($number);
-            if ($old->getId() != $id) {
-                return $this->json(['code' => 400, 'message' => 'e_duplicateNumber', 'data' => $old]);
+            if ($old && $old->getId() != $id) {
+                return $this->json(['code' => 400, 'message' => 'e_duplicateNumber', 'data' => $old], 400);
             }
         }
 
@@ -84,7 +84,7 @@ class ProductController extends AbstractController
     {
         $product = $em->getRepository(Product::class)->get($id);
         if (!$product) {
-            return $this->json(['code' => 404, 'message' => 'e_notFound']);
+            return $this->json(['code' => 404, 'message' => 'e_notFound'], 404);
         }
 
         $product->setDeleted(true);
@@ -93,6 +93,16 @@ class ProductController extends AbstractController
         $em->flush();
 
         return $this->json(["message" => "deleted successfully"]);
+    }
+    #[Route('/api/product/{id}', name: 'product_get', methods: ['GET'])]
+    public function show(EntityManagerInterface $em, int $id): JsonResponse
+    {
+        $product = $em->getRepository(Product::class)->get($id);
+        if (!$product) {
+            return $this->json(['code' => 404, 'message' => 'e_notFound'], 404);
+        }
+
+        return $this->json($product);
     }
 
 }

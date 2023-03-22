@@ -20,6 +20,9 @@ const ar = {
     "Edit": "تعديل",
     "Add New": "إضافة جديد",
     "noProducts": "ليست لديك أية منتجات",
+    "addNewProduct": "إضافة منتج جديد",
+    "submit": "إرسال",
+
 }
 
 export default ar

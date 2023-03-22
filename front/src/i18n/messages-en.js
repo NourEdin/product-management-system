@@ -19,7 +19,19 @@ const en = {
     "Delete": "Delete",
     "Edit": "Edit",
     "Add New": "Add New",
-    "noProducts": "You don't have any products"
+    "noProducts": "You don't have any products",
+    "addNewProduct": "Add a New Product",
+    "submit": "Submit",
+    "editProduct": "Editing Product #",
+    "productAddedSuccessfully": "Product added successfully",
+    "productEditedSuccessfully": "Product edited successfully",
+    "createdAt": "Created At",
+    "lastUpdated": "Last Updated",
+
+    //Error messages
+    "e_duplicateNumber": "Error: Product number is already in use",
+    "e_notFound": "Not Found!"
+
 }
 
 export default en

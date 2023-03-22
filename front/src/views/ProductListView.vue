@@ -30,6 +30,8 @@ onMounted(() => {
           <td>{{ $t('ID') }}</td>
           <td>{{ $t('Name') }}</td>
           <td>{{ $t('Number') }}</td>
+          <td>{{ $t('createdAt') }}</td>
+          <td>{{ $t('lastUpdated') }}</td>
           <td>{{ $t('Actions') }}</td>
         </tr>
       </thead>
@@ -38,6 +40,8 @@ onMounted(() => {
           <td>{{ product.id }}</td>
           <td>{{ product.name }}</td>
           <td>{{ product.number }}</td>
+          <td>{{ product.created_at }}</td>
+          <td>{{ product.updated_at }}</td>
           <td>
             <LocalizedLink :to="`/products/edit/${product.id}`">{{ $t("Edit") }}</LocalizedLink>
             <a href="#" @click="deleteOne(product.id)">{{ $t("Delete") }}</a>

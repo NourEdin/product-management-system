@@ -72,9 +72,53 @@ const deleteProduct = async (id, onSuccess, onFailure = null) => {
     }
   )
 }
+//Calls the API to fetch a single product
+const getProduct = async (id, onSuccess, onFailure = null) => {
+  call(
+    `product/${id}`,
+    {
+      method: 'GET',
+      onSuccess,
+      onFailure
+    }
+  )
+}
+//Calls the API to edit a product
+const editProduct = async (id, product, onSuccess, onFailure = null) => {
+  call(
+    `product/${id}`,
+    {
+      method: 'PUT',
+      data: {
+        name: product.name,
+        number: product.number
+      },
+      onSuccess,
+      onFailure
+    }
+  )
+}
 
+//Calls the API to create a product
+const addProduct = async (product,onSuccess, onFailure = null) => {
+  call(
+    'product',
+    {
+      method: 'POST',
+      data: {
+        name: product.name,
+        number: product.number
+      },
+      onSuccess,
+      onFailure
+    }
+  )
+}
 export {
   login,
   getProducts,
-  deleteProduct
+  deleteProduct,
+  getProduct,
+  editProduct,
+  addProduct,
 }

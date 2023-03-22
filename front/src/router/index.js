@@ -43,7 +43,8 @@ const router = createRouter({
               path: 'edit/:id',
               name: 'product-edit',
               component: () => import('../views/ProductFormView.vue'),
-              meta: { requiresAuth: true }
+              meta: { requiresAuth: true },
+              props: true
             }
           ]
         }
