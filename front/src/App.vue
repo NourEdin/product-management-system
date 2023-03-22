@@ -1,7 +1,6 @@
 <script setup>
 import { computed } from 'vue'
 import { RouterView, RouterLink, useRouter } from 'vue-router'
-import LocalizedLink from './components/l10n/LocalizedLink.vue';
 import { useI18n } from 'vue-i18n';
 import { languages } from '@/i18n';
 import { useUserStore } from '@/stores/user';
