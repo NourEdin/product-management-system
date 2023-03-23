@@ -103,8 +103,8 @@ class ProductRepository extends ServiceEntityRepository
         ->getQuery()
         ->getResult();
 
-        if (count($result)) return $result[0];
-        return;
+        $result = empty($result) ? null : $result[0];
+        return $result;
     }
     /**
      * Gets total number of filtered products except deleted ones
