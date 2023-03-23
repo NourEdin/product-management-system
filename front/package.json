@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@quasar/extras": "^1.15.11",
     "@vueuse/core": "^9.13.0",
     "pinia": "^2.0.32",
     "quasar": "^2.11.8",

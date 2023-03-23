@@ -38,7 +38,7 @@ function saveProduct() {
       product.value,
       (fetchedProduct) => {
         console.log("Added product. result", fetchedProduct)
-        router.push(`/${locale.value}/products/edit/${fetchedProduct.id}?success=added`)
+        router.push(`/${locale.value}/products?success=added`)
       },
       (fetchedError) => {
         updateError(fetchedError, 'notAdded')
@@ -69,10 +69,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <main>
-    <div v-if="success == 'added'">
-      {{ $t('productAddedSuccessfully') }}
-    </div>
+  <q-page id="main">
+    <h2 v-if="props.id">{{ $t("editProduct") }}{{ props.id }}</h2>
+    <h2 v-else>{{ $t("addNewProduct") }}</h2>
+
     <div v-if="success == 'edited'">
       {{ $t('productEditedSuccessfully') }}
     </div>
@@ -80,23 +80,33 @@ onMounted(() => {
       {{ $t(error) }}
     </div>
 
-    <h1 v-if="props.id">{{ $t("editProduct") }}{{ props.id }}</h1>
-    <h1 v-else>{{ $t("addNewProduct") }}</h1>
+    <q-form
+    @submit="saveProduct"
+    class="q-gutter-md"
+    >
+     
+      <q-input
+        filled
+        v-model="product.name"
+        :label="$t('Product name')"
+        lazy-rules
+        :rules="[ val => val && val.length > 0 || $t('Please type something')]"
+      />
 
-    <input v-model="product.name" />
-    <br/>
-    <input v-model="product.number" />
-    <br />
-    <button @click="saveProduct">{{ $t("submit") }}</button>
-
+      <q-input
+        filled
+        type="text"
+        v-model="product.number"
+        :label="$t('Product number')"
+      />
+      <div>
+        <q-btn :label="$t('submit') " type="submit" color="primary"/>
+      </div>
+    </q-form>
     
-  </main>
+  </q-page>
 </template>
 
-<style scoped>
-main {
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
+<style scoped lang="scss">
+
 </style>

@@ -23,6 +23,13 @@ const call = async (endpoint, options) => {
   if (options.data && options.method != 'GET') {
     fetchOptions.body = JSON.stringify(options.data)
   }
+  //Append query parameters to the URL
+  if(options.queryParams) {
+    const query = Object.keys(options.queryParams).map(function(key) {
+      return [key, options.queryParams[key]].map(encodeURIComponent).join("=");
+    }).join("&");
+    endpoint = `${endpoint}?${query}`
+  }
 
   userStore.startLoading();
 
@@ -56,11 +63,12 @@ const login = async (username, password, onSuccess, onFailure) => {
 }
 
 //Fetches the product list
-const getProducts = async (onSuccess, onFailure = null) => {
+const getProducts = async (options, onSuccess, onFailure = null) => {
   call(
     'products',
     {
       method: 'GET',
+      queryParams: options,
       onSuccess,
       onFailure
     }

@@ -11,7 +11,7 @@ export default defineConfig({
     template: { transformAssetUrls }
     }),
     quasar({
-      sassVariables: '@/assets/quasar-variables.sass'
+      sassVariables: '@/assets/quasar-variables.scss'
     })
   ],
   resolve: {
@@ -19,11 +19,11 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
-  css: {
-    preprocessorOptions: {
-      scss: {
-        additionalData: `@import "@/assets/_global.scss";`
-      }
-    }
-  }
+  // css: {
+  //   preprocessorOptions: {
+  //     scss: {
+  //       additionalData: `@import "@/assets/_global.scss";`
+  //     }
+  //   }
+  // }
 })

@@ -68,8 +68,13 @@ class ProductRepository extends ServiceEntityRepository
             ->orderBy("p.$sort", $order);
 
         if (isset($options['term'])) {
-            $builder->andWhere('p.name like %:term% OR p.number like %:term%')
-            ->setParameter('term', $options['term']);
+            // $nameLike = $builder->expr()->like('p.name', $builder->expr()->literal("%{$options['term']}%"));
+            // $numberLike = $builder->expr()->like('p.number', $builder->expr()->literal("%{$options['term']}%"));
+            // $likeExpr = $builder->expr()->orX($nameLike, $numberLike);
+
+            // $builder->andWhere($likeExpr);
+            $builder->andWhere("p.name like :term OR p.number like :term")
+            ->setParameter('term', "%{$options['term']}%");
         }
         if (isset($options['max']) && $options['max'] > 0) {
             $builder->setMaxResults($options['max']);
@@ -109,9 +114,14 @@ class ProductRepository extends ServiceEntityRepository
         ->select('count(p.id)')
         ->andWhere('p.deleted is null OR p.deleted = 0');
 
-        if (isset($options['term'])) {
-            $builder->andWhere('p.name like %:term% OR p.number like %:term%')
-            ->setParameter('term', $options['term']);
+        if (isset($options['term']) && trim($options['term'])) {
+            // $nameLike = $builder->expr()->like('p.name', $builder->expr()->literal("%{$options['term']}%"));
+            // $numberLike = $builder->expr()->like('p.number', $builder->expr()->literal("%{$options['term']}%"));
+            // $likeExpr = $builder->expr()->orX($nameLike, $numberLike);
+
+            // $builder->andWhere($likeExpr);
+            $builder->andWhere("p.name like :term OR p.number like :term")
+            ->setParameter('term', "%{$options['term']}%");
         }
         
         return $builder

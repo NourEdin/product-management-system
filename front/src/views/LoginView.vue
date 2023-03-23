@@ -54,7 +54,7 @@ async function login() {
   </q-page>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 #main {
   display: flex;
   flex-direction: column;

@@ -47,11 +47,13 @@ function logout() {
             <q-route-tab :to="localizePath('/')"  :label="$t('Home')" />
             <q-route-tab v-if="isLoggedIn" :to="localizePath('/products')"  :label="$t('Products')" />
         </q-tabs>
-
-        <q-linear-progress v-show="loading" indeterminate  color="secondary" />
+        
       </q-header>
-  
+      
       <q-page-container>
+        <div id="progress-bar" >
+          <q-linear-progress :class="loading ? '' : 'invisible'" indeterminate  color="secondary" />
+        </div>
         <router-view />
       </q-page-container>
   
@@ -63,5 +65,9 @@ function logout() {
     </q-layout>
 </template>
 <style scoped lang="scss">
-
+#progress-bar {
+  .invisible {
+    visibility: hidden;
+  }
+}
 </style>
