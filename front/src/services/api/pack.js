@@ -43,7 +43,7 @@ const list = async (options, onSuccess, onFailure = null) => {
         method: 'PUT',
         data: {
           name: pack.name,
-        //   products: pack.products
+          productIds: pack.productIds
         },
         onSuccess: response => onSuccess(response.data),
         onFailure: response => onFailure(response.error)
@@ -52,14 +52,14 @@ const list = async (options, onSuccess, onFailure = null) => {
   }
   
   //Calls the API to create a pack
-  const add = async (pack,onSuccess, onFailure = null) => {
+  const add = async (pack, onSuccess, onFailure = null) => {
     call(
       'pack',
       {
         method: 'POST',
         data: {
           name: pack.name,
-          //   products: pack.products
+          productIds: pack.productIds
         },
         onSuccess: response => onSuccess(response.data),
         onFailure: response => onFailure(response.error)

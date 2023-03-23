@@ -33,20 +33,20 @@ class PackController extends ApiController
     {
         $data = $request->toArray();
         $name = $data["name"] ?? null;
-        $products = $data["products"] ?? [];
+        $productIds = $data["productIds"] ?? [];
 
         //Validation
         if (empty(trim($name))) {
             return $this->error('e_missingName');
         }
-        if (count($products) < 2) {
+        if (count($productIds) < 2) {
             return $this->error('e_addMoreProducts');
         }
         
         $pack = new Pack();
 
         //Validate product id's existence, and if they do, add them to the pack
-        $missingProducts = $this->validatePackProducts($em, $pack, $products);
+        $missingProducts = $this->validatePackProducts($em, $pack, $productIds);
 
         if (count($missingProducts)) {
             return $this->error('e_productsNotFound', 400, ['products' => $missingProducts]);
@@ -64,7 +64,7 @@ class PackController extends ApiController
     {
         $data = $request->toArray();
         $name = $data["name"] ?? null;
-        $products = $data["products"] ?? [];
+        $productIds = $data["productIds"] ?? [];
 
         $pack = $em->getRepository(Pack::class)->findOneExceptDeleted($id);
         if (!$pack) {
@@ -75,12 +75,12 @@ class PackController extends ApiController
         if (empty(trim($name))) {
             return $this->error('e_missingName');
         }
-        if (count($products) < 2) {
+        if (count($productIds) < 2) {
             return $this->error('e_addMoreProducts');
         }
 
         //Validate product id's existence, and if they do, add them to the pack
-        $missingProducts = $this->validatePackProducts($em, $pack, $products);
+        $missingProducts = $this->validatePackProducts($em, $pack, $productIds);
 
         if (count($missingProducts)) {
             return $this->error('e_productsNotFound', 400, ['products' => $missingProducts]);
@@ -88,7 +88,7 @@ class PackController extends ApiController
 
         //Remove extra products from the pack
         foreach ($pack->getProducts() as $product) {
-            if (!in_array($product->getId(), $products))
+            if (!in_array($product->getId(), $productIds))
                 $pack->removeProduct($product);
         }
         
@@ -104,10 +104,10 @@ class PackController extends ApiController
      * Loops over the provide product ids and adds them to the pack if they exist
      * @return array missing ids
      */
-    private function validatePackProducts($em, $pack, $products) {
+    private function validatePackProducts($em, $pack, $productIds) {
         $missingProducts = [];
 
-        foreach ($products as $productID) {
+        foreach ($productIds as $productID) {
             $product = $em->getRepository(Product::class)->findOneExceptDeleted($productID);
             if (!$product) {
                 $missingProducts[] = $productID;
