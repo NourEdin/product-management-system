@@ -1,8 +1,7 @@
-
 <script setup> 
 import { defineProps, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { getProduct, editProduct, addProduct } from '../services/api';
+import { productApi } from '../services/api';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps(['id'])
@@ -21,7 +20,7 @@ const error = ref('')
 function saveProduct() {
   // console.log("Saving product")
   if (props.id) { //Case of edit
-    editProduct(
+    productApi.edit(
       props.id,
       product.value,
       (fetchedProduct) => {
@@ -34,7 +33,7 @@ function saveProduct() {
       }
     )
   } else { //Case of add
-    addProduct(
+    productApi.add(
       product.value,
       (fetchedProduct) => {
         console.log("Added product. result", fetchedProduct)
@@ -52,7 +51,7 @@ function updateError(fetchedError, defaultError) {
 onMounted(() => {
   //If this is edit, fetch the product from backend
   if (props.id) {
-    getProduct(props.id,
+    productApi.get(props.id,
       (fetchedProduct) => {product.value = fetchedProduct},
       (fetchedError) => {
         updateError(fetchedError, 'notFoundError')

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\CredentialRepository;
+use App\Repository\PackRepository;
 use App\Repository\ProductRepository;
 use App\Repository\UserRepository;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
@@ -12,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
 
-class ExternalApiController extends AbstractController
+class ExternalApiController extends ApiController
 {
     #[Route('/ext-api/login', name: 'external_api_login')]
     public function login(CredentialRepository $credentialRepository, JWTTokenManagerInterface $JWTManager, Request $request): JsonResponse
@@ -22,14 +23,13 @@ class ExternalApiController extends AbstractController
         $secret = $data['secret'] ?? null;
 
         if (null === $clientID && null === $secret) {
-            throw new CustomUserMessageAuthenticationException('Client ID or secret was not provided');
-
+            $this->error('Client ID or secret was not provided', 403);
         }
 
         $cred = $credentialRepository->findOneBy(['client_id' => $clientID, 'secret' => $secret]);
 
         if (!$cred)
-            throw new CustomUserMessageAuthenticationException('Invalid Client ID or secret');
+            $this->error('Invalid Client ID or secret', 403);
 
 
         return $this->json([
@@ -38,15 +38,27 @@ class ExternalApiController extends AbstractController
     }
     #[Route('/ext-api/products', name: 'external_api_products_list', methods: 'GET')]
     public function listProducts(ProductRepository $productRepository): JsonResponse {
-        return $this->json($productRepository->findAllExceptDeleted());
+        return $this->responseOb($productRepository->findAllExceptDeleted());
     }    
     #[Route('/ext-api/product/{id}', name: 'external_api_product_get', methods: 'GET')]
     public function getProduct(ProductRepository $productRepository, int $id): JsonResponse {
         $product = $productRepository->findOneExceptDeleted($id);
         if (!$product) {
-            return $this->json(['code' => 404, 'message' => 'The requested product was not found']);
+            return $this->error('The requested product was not found', 404);
         }
         return $this->json($product);
+    }
+    #[Route('/ext-api/packs', name: 'external_api_packs_list', methods: 'GET')]
+    public function listPacks(PackRepository $packRepository): JsonResponse {
+        return $this->responseOb($packRepository->findAllExceptDeleted());
+    }    
+    #[Route('/ext-api/pack/{id}', name: 'external_api_pack_get', methods: 'GET')]
+    public function getPack(PackRepository $packRepository, int $id): JsonResponse {
+        $pack = $packRepository->findOneExceptDeleted($id);
+        if (!$pack) {
+            return $this->error('The requested pack was not found', 404);
+        }
+        return $this->json($pack);
     }
 
 }

@@ -6,6 +6,7 @@ use App\Repository\PackRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Ignore;
 
 #[ORM\Entity(repositoryClass: PackRepository::class)]
 class Pack
@@ -27,6 +28,7 @@ class Pack
     #[ORM\ManyToMany(targetEntity: Product::class)]
     private Collection $products;
 
+    #[Ignore]
     #[ORM\Column(nullable: true)]
     private ?bool $deleted = null;
 
