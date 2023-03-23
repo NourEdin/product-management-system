@@ -38,11 +38,11 @@ class ExternalApiController extends AbstractController
     }
     #[Route('/ext-api/products', name: 'external_api_products_list', methods: 'GET')]
     public function listProducts(ProductRepository $productRepository): JsonResponse {
-        return $this->json($productRepository->all());
+        return $this->json($productRepository->findAllExceptDeleted());
     }    
     #[Route('/ext-api/product/{id}', name: 'external_api_product_get', methods: 'GET')]
     public function getProduct(ProductRepository $productRepository, int $id): JsonResponse {
-        $product = $productRepository->get($id);
+        $product = $productRepository->findOneExceptDeleted($id);
         if (!$product) {
             return $this->json(['code' => 404, 'message' => 'The requested product was not found']);
         }

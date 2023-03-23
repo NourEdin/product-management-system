@@ -1,18 +1,8 @@
-$primary-color: #0b5e80;
-$secondary-color: #DD9F00;
+$primary: #0b5e80;
+$secondary: #DD9F00;
 $relaxed-black: #575757;
 
 * {
   box-sizing: border-box;
 }
-a.normal-text {
-  text-decoration: none;
-  color: $secondary-color;
-}
-body {
-  font-family: Arial, Helvetica, sans-serif;
-}
-main {
-  display: flex;
-  padding-top: 20px;
-}
+

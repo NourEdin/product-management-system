@@ -27,6 +27,9 @@ class Pack
     #[ORM\ManyToMany(targetEntity: Product::class)]
     private Collection $products;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $deleted = null;
+
     public function __construct()
     {
         $this->products = new ArrayCollection();
@@ -94,6 +97,18 @@ class Pack
     public function removeProduct(Product $product): self
     {
         $this->products->removeElement($product);
+
+        return $this;
+    }
+
+    public function isDeleted(): ?bool
+    {
+        return $this->deleted;
+    }
+
+    public function setDeleted(?bool $deleted): self
+    {
+        $this->deleted = $deleted;
 
         return $this;
     }
