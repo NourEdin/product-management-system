@@ -1,7 +1,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { getProducts, deleteProduct } from '@/services/api';
+import { productApi } from '@/services/api';
 import { localizePath } from '@/i18n';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
@@ -44,12 +44,12 @@ function dateFormat(date) {
 }
 function deleteOne (id)  {
   console.log("Deleting product", id);
-  deleteProduct(id, () => {
+  productApi.remove(id, () => {
     tableRef.value.requestServerInteraction()
   });
 }
 function getAll(params, props) {
-  getProducts(
+  productApi.list(
     params,
     (data) => {
       products.value = data.products

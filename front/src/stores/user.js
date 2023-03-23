@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { login } from '@/services/api'
+import { userApi } from '@/services/api'
 import { useStorage } from '@vueuse/core'
 
 export const useUserStore = defineStore('user', {
@@ -19,7 +19,7 @@ export const useUserStore = defineStore('user', {
       this.token = "";
       
       const me = this;
-      login(
+      userApi.login(
         username, 
         password, 
         data => {
