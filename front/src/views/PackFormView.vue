@@ -27,7 +27,7 @@ function savePack() {
         productIds: pack.value.products.map(product => product.id)
       },
       fetchedPack => {
-        updateState
+        updateState(fetchedPack)
         success.value = 'edited'
         window.scrollTo(0,0)
       },
