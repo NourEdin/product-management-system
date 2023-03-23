@@ -5,6 +5,8 @@ const apiBase = import.meta.env.VITE_BACKEND_API_BASE;
 
 //Makes the actual API call using fetch API
 const call = async (endpoint, options) => {
+  const userStore = useUserStore();
+
   //Preparing fetch API options
   const fetchOptions = {
     method: options.method,
@@ -15,15 +17,25 @@ const call = async (endpoint, options) => {
   }
   //If noAuth is provided, skip adding the authorization header
   if (!options.noAuth) {
-    const {token} = useUserStore()
-    fetchOptions.headers["Authorization"] = `Bearer ${token}`
+    fetchOptions.headers["Authorization"] = `Bearer ${userStore.token}`
   }
   //Append body data only if provided and is not a GET request
   if (options.data && options.method != 'GET') {
     fetchOptions.body = JSON.stringify(options.data)
   }
+  //Append query parameters to the URL
+  if(options.queryParams) {
+    const query = Object.keys(options.queryParams).map(function(key) {
+      return [key, options.queryParams[key]].map(encodeURIComponent).join("=");
+    }).join("&");
+    endpoint = `${endpoint}?${query}`
+  }
+
+  userStore.startLoading();
 
   const response = await fetch(`${apiBase}${endpoint}`, fetchOptions);
+
+  userStore.stopLoading();
 
   if (response.status == 200) { //Call onSuccess
     if(options.onSuccess)
@@ -51,13 +63,14 @@ const login = async (username, password, onSuccess, onFailure) => {
 }
 
 //Fetches the product list
-const getProducts = async (onSuccess, onFailure = null) => {
+const getProducts = async (options, onSuccess, onFailure = null) => {
   call(
     'products',
     {
       method: 'GET',
-      onSuccess,
-      onFailure
+      queryParams: options,
+      onSuccess: response => onSuccess(response.data),
+      onFailure: response => onFailure(response.error)
     }
   )
 }
@@ -67,8 +80,8 @@ const deleteProduct = async (id, onSuccess, onFailure = null) => {
     `product/${id}`,
     {
       method: 'DELETE',
-      onSuccess,
-      onFailure
+      onSuccess: response => onSuccess(response.data),
+      onFailure: response => onFailure(response.error)
     }
   )
 }
@@ -78,8 +91,8 @@ const getProduct = async (id, onSuccess, onFailure = null) => {
     `product/${id}`,
     {
       method: 'GET',
-      onSuccess,
-      onFailure
+      onSuccess: response => onSuccess(response.data),
+      onFailure: response => onFailure(response.error)
     }
   )
 }
@@ -93,8 +106,8 @@ const editProduct = async (id, product, onSuccess, onFailure = null) => {
         name: product.name,
         number: product.number
       },
-      onSuccess,
-      onFailure
+      onSuccess: response => onSuccess(response.data),
+      onFailure: response => onFailure(response.error)
     }
   )
 }
@@ -109,8 +122,8 @@ const addProduct = async (product,onSuccess, onFailure = null) => {
         name: product.name,
         number: product.number
       },
-      onSuccess,
-      onFailure
+      onSuccess: response => onSuccess(response.data),
+      onFailure: response => onFailure(response.error)
     }
   )
 }

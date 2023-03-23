@@ -6,6 +6,7 @@ export const useUserStore = defineStore('user', {
   state: () => ({
     token: useStorage('token', ''),
     error: '',
+    loading: false
   }),
   getters: {
     isLoggedIn(state) {
@@ -30,6 +31,12 @@ export const useUserStore = defineStore('user', {
     },
     logout() {
       this.token = "";
+    },
+    startLoading() {
+      this.loading = true;
+    },
+    stopLoading() {
+      this.loading = false;
     }
   }
 });

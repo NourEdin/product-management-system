@@ -22,6 +22,11 @@ export const i18n = createI18n({
         ar
     }
 })
+//Converts a normal route path to a localized one
+export function localizePath(to) {
+    const locale = i18n.global.locale.value 
+    return to == '/' ? '/' + locale : '/' + locale + to
+}
 
 export function setLocale(lang) {
     i18n.global.locale.value = lang
