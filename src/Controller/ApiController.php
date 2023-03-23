@@ -18,4 +18,12 @@ class ApiController extends AbstractController
         ], $code);
     }
 
+    /**
+     * Simplifies how errors are returned from controller functions
+     * @param array $data Optional contextual data if provided 
+     */
+    protected function error($message, $code = 400, $data = []) {
+        return $this->responseOb($data, $code, $message);
+    }
+
 }

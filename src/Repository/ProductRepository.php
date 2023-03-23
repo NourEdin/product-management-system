@@ -30,9 +30,11 @@ class ProductRepository extends ServiceEntityRepository
         }
     }
 
-    public function remove(Product $entity, bool $flush = false): void
+    public function softDelete(Product $entity, bool $flush = false): void
     {
-        $this->getEntityManager()->remove($entity);
+        // Soft delete
+        $entity->setDeleted(true);
+        $this->getEntityManager()->persist($entity);
 
         if ($flush) {
             $this->getEntityManager()->flush();
@@ -40,7 +42,7 @@ class ProductRepository extends ServiceEntityRepository
     }
     /**
      * Gets all products except deleted ones
-     * @param array $options Quary options
+     * @param array $options Query options
      *      @type $options['offset']    The row to start from
      *      @type $options['max']       The max number of rows to fetch in the same page
      *      @type $options['term']      The string to search by
@@ -53,7 +55,7 @@ class ProductRepository extends ServiceEntityRepository
 
         if (isset($options['sort'])) {
             //Supported sorting fields:
-            $supported = ['name', 'number', 'id'];
+            $supported = ['name', 'number', 'id', 'created_at', 'updated_at'];
             if (in_array($options['sort'], $supported))
                 $sort = $options['sort'];
         }
@@ -106,7 +108,7 @@ class ProductRepository extends ServiceEntityRepository
     }
     /**
      * Gets total number of filtered products except deleted ones
-     * @param array $options Quary options
+     * @param array $options Query options
      *      @type $options['term']      The string to search by
      */
     public function getTotalExceptDeleted($options) {

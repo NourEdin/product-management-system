@@ -69,8 +69,8 @@ const getProducts = async (options, onSuccess, onFailure = null) => {
     {
       method: 'GET',
       queryParams: options,
-      onSuccess,
-      onFailure
+      onSuccess: response => onSuccess(response.data),
+      onFailure: response => onFailure(response.error)
     }
   )
 }
@@ -80,8 +80,8 @@ const deleteProduct = async (id, onSuccess, onFailure = null) => {
     `product/${id}`,
     {
       method: 'DELETE',
-      onSuccess,
-      onFailure
+      onSuccess: response => onSuccess(response.data),
+      onFailure: response => onFailure(response.error)
     }
   )
 }
@@ -91,8 +91,8 @@ const getProduct = async (id, onSuccess, onFailure = null) => {
     `product/${id}`,
     {
       method: 'GET',
-      onSuccess,
-      onFailure
+      onSuccess: response => onSuccess(response.data),
+      onFailure: response => onFailure(response.error)
     }
   )
 }
@@ -106,8 +106,8 @@ const editProduct = async (id, product, onSuccess, onFailure = null) => {
         name: product.name,
         number: product.number
       },
-      onSuccess,
-      onFailure
+      onSuccess: response => onSuccess(response.data),
+      onFailure: response => onFailure(response.error)
     }
   )
 }
@@ -122,8 +122,8 @@ const addProduct = async (product,onSuccess, onFailure = null) => {
         name: product.name,
         number: product.number
       },
-      onSuccess,
-      onFailure
+      onSuccess: response => onSuccess(response.data),
+      onFailure: response => onFailure(response.error)
     }
   )
 }

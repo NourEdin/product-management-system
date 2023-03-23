@@ -36,13 +36,13 @@ class ProductController extends ApiController
 
         //Validation
         if (empty(trim($name))) {
-            return $this->json(['code' => 400, 'message' => 'e_missingName'], 400);
+            return $this->error('e_missingName');
         }
         //Prevent duplicate product numbers
         if ($number) {
             $old = $em->getRepository(Product::class)->findOneByNumber($number);
             if ($old) {
-                return $this->json(['code' => 400, 'message' => 'e_duplicateNumber', 'data' => $old], 400);
+                return $this->error('e_duplicateNumber', 400, $old);
             }
         }
 
@@ -53,7 +53,7 @@ class ProductController extends ApiController
         $em->persist($product);
         $em->flush();
 
-        return $this->json($product);
+        return $this->responseOb($product);
     } 
     #[Route('/api/product/{id}', name: 'product_edit', methods: ['PUT'])]
     public function edit(EntityManagerInterface $em, Request $request, int $id): JsonResponse
@@ -64,18 +64,18 @@ class ProductController extends ApiController
 
         $product = $em->getRepository(Product::class)->findOneExceptDeleted($id);
         if (!$product) {
-            return $this->json(['code' => 404, 'message' => 'e_notFound'], 404);
+            return $this->error('e_notFound', 404);
         }
 
         //Validation
         if (empty(trim($name))) {
-            return $this->json(['code' => 400, 'message' => 'e_missingName'], 400);
+            return $this->error('e_missingName');
         }
         //Prevent duplicate product numbers
         if ($number) {
             $old = $em->getRepository(Product::class)->findOneByNumber($number);
             if ($old && $old->getId() != $id) {
-                return $this->json(['code' => 400, 'message' => 'e_duplicateNumber', 'data' => $old], 400);
+                return $this->error('e_duplicateNumber');
             }
         }
 
@@ -86,32 +86,29 @@ class ProductController extends ApiController
         $em->persist($product);
         $em->flush();
 
-        return $this->json($product);
+        return $this->responseOb($product);
     } 
     #[Route('/api/product/{id}', name: 'product_delete', methods: ['DELETE'])]
-    public function delete(EntityManagerInterface $em, int $id): JsonResponse
+    public function delete(ProductRepository $productRepository, int $id): JsonResponse
     {
-        $product = $em->getRepository(Product::class)->findOneExceptDeleted($id);
+        $product = $productRepository->findOneExceptDeleted($id);
         if (!$product) {
-            return $this->json(['code' => 404, 'message' => 'e_notFound'], 404);
+            return $this->error('e_notFound', 404);
         }
 
-        $product->setDeleted(true);
+        $productRepository->softDelete($product, true);
 
-        $em->persist($product);
-        $em->flush();
-
-        return $this->json(["message" => "deleted successfully"]);
+        return $this->responseOb([]);
     }
     #[Route('/api/product/{id}', name: 'product_get', methods: ['GET'])]
-    public function show(EntityManagerInterface $em, int $id): JsonResponse
+    public function show(ProductRepository $productRepository, int $id): JsonResponse
     {
-        $product = $em->getRepository(Product::class)->findOneExceptDeleted($id);
+        $product = $productRepository->findOneExceptDeleted($id);
         if (!$product) {
-            return $this->json(['code' => 404, 'message' => 'e_notFound'], 404);
+            return $this->error('e_notFound', 404);
         }
 
-        return $this->json($product);
+        return $this->responseOb($product);
     }
 
 }

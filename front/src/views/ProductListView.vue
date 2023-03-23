@@ -51,12 +51,12 @@ function deleteOne (id)  {
 function getAll(params, props) {
   getProducts(
     params,
-    (response) => {
-      products.value = response.data.products
-      total.value = response.data.total
+    (data) => {
+      products.value = data.products
+      total.value = data.total
 
       //Update the pagination to reflect on the table
-      pagination.value.rowsNumber = response.data.total
+      pagination.value.rowsNumber = data.total
       pagination.value.page = props.page
       pagination.value.rowsPerPage = props.rowsPerPage
       pagination.value.sortBy = props.sortBy

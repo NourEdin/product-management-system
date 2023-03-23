@@ -47,7 +47,7 @@ function saveProduct() {
   }
 }
 function updateError(fetchedError, defaultError) {
-  error.value = fetchedError.message ? fetchedError.message : $t(defaultError)
+  error.value = fetchedError ? fetchedError : defaultError
 }
 onMounted(() => {
   //If this is edit, fetch the product from backend
