@@ -3,7 +3,11 @@
 namespace App\Repository;
 
 use App\Entity\Pack;
+use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\Query;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -49,7 +53,7 @@ class PackRepository extends ServiceEntityRepository
      *      @type $options['sort']      The field to order by
      *      @type $options['order']     Order direction    
      */
-    public function findAllExceptDeleted($options = []) {
+    public function findAllExceptDeleted($options = [], $flatted = false) {
         $sort = 'id'; //The default field to order by
         $order = 'asc'; //Default direction
 
@@ -65,12 +69,14 @@ class PackRepository extends ServiceEntityRepository
                 $order = $options['order'];
         }
         
-        $builder = $this->createQueryBuilder('p')
-            ->andWhere('p.deleted is null OR p.deleted = 0')
-            ->orderBy("p.$sort", $order);
+        $builder = $this->createQueryBuilder('pack')
+            ->andWhere('pack.deleted is null OR pack.deleted = 0')
+            ->leftJoin('pack.products', 'product')
+            ->select('pack, product')
+            ->orderBy("pack.$sort", $order);
 
         if (isset($options['term'])) {
-            $builder->andWhere("p.name like :term")
+            $builder->andWhere("pack.name like :term")
             ->setParameter('term', "%{$options['term']}%");
         }
         if (isset($options['max']) && $options['max'] > 0) {
@@ -79,27 +85,42 @@ class PackRepository extends ServiceEntityRepository
         if (isset($options['offset']) && $options['offset'] > 0) {
             $builder->setFirstResult($options['offset']);
         }
-           
-        return $builder
-        ->getQuery()
-        ->getResult();
+        //Set hydration mode depending on the response structuer
+        $hydration = $flatted ? Query::HYDRATE_SCALAR : Query::HYDRATE_ARRAY;
+
+        $query = $builder->getQuery();
+        $query->setHydrationMode($hydration);
+
+        //We need the paginator to handle pagination with joins
+        $paginator = new Paginator($query);
+
+        return $paginator;           
     }
     /**
      * Finds a pack by its id and returns null if it's deleted
      */
-    public function findOneExceptDeleted($id) {
-        $builder = $this->createQueryBuilder('p')
-        ->andWhere('p.id = :id')
+    public function findOneExceptDeleted($id, $flatted = false) {
+        $builder = $this->createQueryBuilder('pack')
+        ->leftJoin('pack.products', 'product')
+        ->select('pack, product')
+        ->andWhere('pack.id = :id')
         ->setParameter('id', $id)
-        ->andWhere('p.deleted is null OR p.deleted = 0');
+        ->andWhere('pack.deleted is null OR pack.deleted = 0');
         
-           
+        //Set hydration mode depending on the response structuer
+        //Important: if it's not flatted, keep it null to return an object to be reused
+        $hydration = $flatted ? Query::HYDRATE_SCALAR : Query::HYDRATE_OBJECT;
+        
+        //Returned as array
         $result = $builder
-        ->getQuery()
-        ->getResult();
+            ->getQuery()
+            ->getResult($hydration);
 
-        if (count($result)) return $result[0];
-        return;
+        if (!$flatted) {
+            $result = empty($result) ? null : $result[0];
+        }
+        return $result;
+
     }
     /**
      * Gets total number of filtered packs except deleted ones

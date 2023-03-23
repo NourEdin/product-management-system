@@ -50,12 +50,13 @@ class ExternalApiController extends ApiController
     }
     #[Route('/ext-api/packs', name: 'external_api_packs_list', methods: 'GET')]
     public function listPacks(PackRepository $packRepository): JsonResponse {
-        return $this->responseOb($packRepository->findAllExceptDeleted());
+        return $this->responseOb($packRepository->findAllExceptDeleted([], true));
+        
     }    
     #[Route('/ext-api/pack/{id}', name: 'external_api_pack_get', methods: 'GET')]
     public function getPack(PackRepository $packRepository, int $id): JsonResponse {
-        $pack = $packRepository->findOneExceptDeleted($id);
-        if (!$pack) {
+        $pack = $packRepository->findOneExceptDeleted($id, true);
+        if (empty($pack)) {
             return $this->error('The requested pack was not found', 404);
         }
         return $this->json($pack);
