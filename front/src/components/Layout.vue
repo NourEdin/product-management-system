@@ -46,6 +46,7 @@ function logout() {
         <q-tabs align="left">
             <q-route-tab :to="localizePath('/')"  :label="$t('Home')" />
             <q-route-tab v-if="isLoggedIn" :to="localizePath('/products')"  :label="$t('Products')" />
+            <q-route-tab v-if="isLoggedIn" :to="localizePath('/packs')"  :label="$t('Packs')" />
         </q-tabs>
         
       </q-header>

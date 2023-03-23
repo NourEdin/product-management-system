@@ -47,6 +47,30 @@ const router = createRouter({
               props: true
             }
           ]
+        },
+        {
+          path: 'packs/',
+          children: [
+            {
+              path: '',
+              name: 'pack-list',
+              component: () => import('../views/PackListView.vue'),
+              meta: { requiresAuth: true }
+            },
+            {
+              path: 'add',
+              name: 'pack-add',
+              component: () => import('../views/PackFormView.vue'),
+              meta: { requiresAuth: true }
+            },
+            {
+              path: 'edit/:id',
+              name: 'pack-edit',
+              component: () => import('../views/PackFormView.vue'),
+              meta: { requiresAuth: true },
+              props: true
+            }
+          ]
         }
       ]
     }
