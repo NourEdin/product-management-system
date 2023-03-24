@@ -34,9 +34,21 @@ const en = {
     "Product number": "Product number",
     "Product name": "Product name",
 
+    //Packs Page
+    "Packs": "Packs",
+    "addNewPack": "Add a New Pack",
+    "Pack name": "Pack name",
+    "selectPackProducts": "Please select products included in this pack:",
+    "Pack Products": "Pack Products",
+    "editPack": "Edit Pack",
+
     //Error messages
     "e_duplicateNumber": "Error: Product number is already in use",
     "e_notFound": "Not Found!",
+    "e_addMoreProducts": "Please add more products",
+    "Please type something": "Please type something",
+    "e_productsNotFound": "You're trying to link the pack with non-existing products"
+
 
 }
 

@@ -95,6 +95,9 @@ onMounted(() => {
   requestServerInteraction();
 })
 
+defineExpose({
+  requestServerInteraction
+})
 </script>
 <template>
   <q-table

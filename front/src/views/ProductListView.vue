@@ -9,7 +9,7 @@ import ProductTable from '../components/ProductTable.vue';
 
 const route = useRoute()
 const {t, locale} = useI18n()
-const childRef = ref()
+const childRef = ref(null)
 
 const loading = ref(false)
 const success = ref('');

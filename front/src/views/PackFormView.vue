@@ -52,7 +52,6 @@ function updateError(fetchedError) {
 //Updates the ref pack and selectedProducts
 function updateState(fetchedPack) {
   pack.value = fetchedPack
-  selectedProducts = pack.value.products.map((product) => product.id)
 }
 onMounted(() => {
   //If this is edit, fetch the pack from backend
@@ -74,7 +73,7 @@ onMounted(() => {
 
 <template>
   <q-page id="main">
-    <h2 v-if="props.id">{{ $t("editPack") }}{{ props.id }}</h2>
+    <h2 v-if="props.id">{{ $t("editPack") }} {{ props.id }}</h2>
     <h2 v-else>{{ $t("addNewPack") }}</h2>
 
     <div v-if="success == 'edited'">
