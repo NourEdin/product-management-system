@@ -9,7 +9,7 @@ const list = async (options, onSuccess, onFailure = null) => {
         method: 'GET',
         queryParams: options,
         onSuccess: response => onSuccess(response.data),
-        onFailure: response => onFailure(response.error)
+        onFailure: response => onFailure ? onFailure(response.error) : 0
       }
     )
   }
@@ -20,7 +20,7 @@ const list = async (options, onSuccess, onFailure = null) => {
       {
         method: 'DELETE',
         onSuccess: response => onSuccess(response.data),
-        onFailure: response => onFailure(response.error)
+        onFailure: response => onFailure ? onFailure(response.error) : 0
       }
     )
   }
@@ -31,7 +31,7 @@ const list = async (options, onSuccess, onFailure = null) => {
       {
         method: 'GET',
         onSuccess: response => onSuccess(response.data),
-        onFailure: response => onFailure(response.error)
+        onFailure: response => onFailure ? onFailure(response.error) : 0
       }
     )
   }
@@ -46,7 +46,7 @@ const list = async (options, onSuccess, onFailure = null) => {
           productIds: pack.productIds
         },
         onSuccess: response => onSuccess(response.data),
-        onFailure: response => onFailure(response.error)
+        onFailure: response => onFailure ? onFailure(response.error) : 0
       }
     )
   }
@@ -62,7 +62,7 @@ const list = async (options, onSuccess, onFailure = null) => {
           productIds: pack.productIds
         },
         onSuccess: response => onSuccess(response.data),
-        onFailure: response => onFailure(response.error)
+        onFailure: response => onFailure ? onFailure(response.error) : 0
       }
     )
   }
