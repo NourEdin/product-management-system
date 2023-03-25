@@ -32,6 +32,9 @@ class Pack
     #[ORM\Column(nullable: true)]
     private ?bool $deleted = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $enabled = null;
+
     public function __construct()
     {
         $this->products = new ArrayCollection();
@@ -111,6 +114,18 @@ class Pack
     public function setDeleted(?bool $deleted): self
     {
         $this->deleted = $deleted;
+
+        return $this;
+    }
+
+    public function isEnabled(): ?bool
+    {
+        return $this->enabled;
+    }
+
+    public function setEnabled(?bool $enabled): self
+    {
+        $this->enabled = $enabled;
 
         return $this;
     }

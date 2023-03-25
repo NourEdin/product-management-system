@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Pack;
 use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\ParameterType;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\Tools\Pagination\Paginator;
@@ -85,6 +86,9 @@ class PackRepository extends ServiceEntityRepository
         if (isset($options['offset']) && $options['offset'] > 0) {
             $builder->setFirstResult($options['offset']);
         }
+        if (isset($options['enabledOnly']) && $options['enabledOnly']) {
+            $builder->andWhere('pack.enabled = :enabled')->setParameter('enabled', true, ParameterType::BOOLEAN);
+        }
         //Set hydration mode depending on the response structuer
         $hydration = $flatted ? Query::HYDRATE_SCALAR : Query::HYDRATE_ARRAY;
 
@@ -98,14 +102,20 @@ class PackRepository extends ServiceEntityRepository
     }
     /**
      * Finds a pack by its id and returns null if it's deleted
+     * @param array $options options of the query
+     *      @type $options['id']            A required field representing the pack id to fetch
+     *      @type $options['enabledOnly']   Whether to fetch enabled pack only, returns null or [] otherwise.
      */
-    public function findOneExceptDeleted($id, $flatted = false) {
+    public function findOneExceptDeleted($options, $flatted = false) {
         $builder = $this->createQueryBuilder('pack')
         ->leftJoin('pack.products', 'product')
         ->select('pack, product')
         ->andWhere('pack.id = :id')
-        ->setParameter('id', $id)
+        ->setParameter('id', $options['id'] ?? null)
         ->andWhere('pack.deleted is null OR pack.deleted = 0');
+
+        if (isset($options['enabledOnly']) && $options['enabledOnly'])
+            $builder->andWhere('pack.enabled = :enabled')->setParameter('enabled', true, ParameterType::BOOLEAN);
         
         //Set hydration mode depending on the response structuer
         //Important: if it's not flatted, keep it null to return an object to be reused
@@ -140,6 +150,20 @@ class PackRepository extends ServiceEntityRepository
         return $builder
         ->getQuery()
         ->getSingleScalarResult();
+    }
+    /**
+     * Updates all packs 
+     * @param array $options the update SET's 
+     */
+    public function updateAll($options) {
+        $builder = $this->createQueryBuilder('pack')
+            ->update();
+        if (isset($options['enabled'])) 
+            $builder->set('pack.enabled', ':enabled')->setParameter('enabled', $options['enabled']);
+        
+        $builder->where('1=1');
+        $query = $builder->getQuery();
+        $query->execute();
     }
 
 //    /**
