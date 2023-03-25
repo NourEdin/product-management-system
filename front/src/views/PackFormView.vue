@@ -1,5 +1,5 @@
 <script setup> 
-import { defineProps, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { packApi } from '../services/api';
 import { useI18n } from 'vue-i18n';
@@ -7,7 +7,7 @@ import ProductTable from '../components/ProductTable.vue';
 
 const props = defineProps(['id'])
 const route = useRoute();
-const { locale } = useI18n();
+const { t, locale } = useI18n();
 const router = useRouter()
 const pack = ref({
   id: 0,
@@ -16,9 +16,16 @@ const pack = ref({
 })
 
 const success = ref('');
+const error = ref('');
 
-const error = ref('')
 function savePack() {
+  //Validating the pack
+  //Note: Name is validated in the table component.
+  //Validating number of products
+  if (pack.products.length < 2) {
+    error = t('e_addMoreProducts')
+    return;
+  }
   if (props.id) { //Case of edit
     packApi.edit(
       props.id,
