@@ -23,7 +23,8 @@ security:
         api:
             pattern:   ^/api
             stateless: true
-            jwt: ~
+            jwt: 
+                authenticator: app.jwt_internal_authenticator
 
         ext-api-login:
             pattern: ^/ext-api/login

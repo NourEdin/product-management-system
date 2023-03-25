@@ -40,12 +40,34 @@ const call = async (endpoint, options) => {
   if (response.status == 200) { //Call onSuccess
     if(options.onSuccess)
       response.json().then(options.onSuccess)
-  } else { //Call onFailure
+  } else if(response.status == 401) { //Token expired, you need to logout
+    userStore.logout()
+  }
+  else { //Call onFailure
     if (options.onFailure)
       response.json().then(options.onFailure)
   }
 }
 
+//Calls the login endpoint to log in using username and password
+const login = async (username, password, onSuccess, onFailure) => {
+  call(
+    'login',
+    {
+      method: 'POST',
+      data: {
+        username,
+        password
+      },
+      onSuccess,
+      onFailure
+    }
+  )
+}
+
+
+
 export {
-    call
+    call,
+    login
 }

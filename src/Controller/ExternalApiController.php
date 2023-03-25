@@ -31,9 +31,9 @@ class ExternalApiController extends ApiController
         if (!$cred)
             $this->error('Invalid Client ID or secret', 403);
 
-
+        //Create a token, but label it with 'isExternal to prevent its usage with the internal api
         return $this->json([
-            'token' => $JWTManager->create($cred->getUser())
+            'token' => $JWTManager->createFromPayload($cred->getUser(), ['isExternal' => 1])
         ]);
     }
     #[Route('/ext-api/products', name: 'external_api_products_list', methods: 'GET')]
