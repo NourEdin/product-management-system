@@ -14,7 +14,7 @@ final class Version20230325201308 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return '';
+        return 'Adds enabled field to Pack';
     }
 
     public function up(Schema $schema): void
