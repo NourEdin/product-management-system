@@ -1,5 +1,5 @@
 <script setup> 
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { productApi } from '../services/api';
 import { useI18n } from 'vue-i18n';

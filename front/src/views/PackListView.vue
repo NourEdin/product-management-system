@@ -1,6 +1,6 @@
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { packApi } from '@/services/api';
 import { localizePath } from '@/i18n';
 import { useI18n } from 'vue-i18n';
