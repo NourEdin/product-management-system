@@ -73,7 +73,8 @@ class PackRepository extends ServiceEntityRepository
         $builder = $this->createQueryBuilder('pack')
             ->andWhere('pack.deleted is null OR pack.deleted = 0')
             ->leftJoin('pack.products', 'product')
-            ->select('pack, product')
+            ->leftJoin('product.image', 'image')
+            ->select('pack, product, image')
             ->orderBy("pack.$sort", $order);
 
         if (isset($options['term'])) {
@@ -109,7 +110,8 @@ class PackRepository extends ServiceEntityRepository
     public function findOneExceptDeleted($options, $flatted = false) {
         $builder = $this->createQueryBuilder('pack')
         ->leftJoin('pack.products', 'product')
-        ->select('pack, product')
+        ->leftJoin('product.image', 'image')
+        ->select('pack, product, image')
         ->andWhere('pack.id = :id')
         ->setParameter('id', $options['id'] ?? null)
         ->andWhere('pack.deleted is null OR pack.deleted = 0');
