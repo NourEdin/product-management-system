@@ -34,6 +34,7 @@ class PackController extends ApiController
         $data = $request->toArray();
         $name = $data["name"] ?? null;
         $productIds = $data["productIds"] ?? [];
+        $enabled = $data['enabled'] ?? 0;
 
         //Validation
         if (empty(trim($name))) {
@@ -53,6 +54,7 @@ class PackController extends ApiController
         }
         
         $pack->setName($name);
+        $pack->setEnabled($enabled);
 
         $em->persist($pack);
         $em->flush();
@@ -65,8 +67,9 @@ class PackController extends ApiController
         $data = $request->toArray();
         $name = $data["name"] ?? null;
         $productIds = $data["productIds"] ?? [];
+        $enabled = $data['enabled'] ?? 0;
 
-        $pack = $em->getRepository(Pack::class)->findOneExceptDeleted($id);
+        $pack = $em->getRepository(Pack::class)->findOneExceptDeleted(['id' => $id]);
         if (!$pack) {
             return $this->error('e_notFound', 404);
         }
@@ -93,6 +96,7 @@ class PackController extends ApiController
         }
         
         $pack->setName($name);
+        $pack->setEnabled($enabled);
         $pack->setUpdatedAt(new \DateTimeImmutable());
 
         $em->persist($pack);
@@ -120,7 +124,7 @@ class PackController extends ApiController
     #[Route('/api/pack/{id}', name: 'pack_delete', methods: ['DELETE'])]
     public function delete(PackRepository $packRepository, int $id): JsonResponse
     {
-        $pack = $packRepository->findOneExceptDeleted($id);
+        $pack = $packRepository->findOneExceptDeleted(['id' => $id]);
         if (!$pack) {
             return $this->error('e_notFound', 404);
         }
@@ -132,12 +136,27 @@ class PackController extends ApiController
     #[Route('/api/pack/{id}', name: 'pack_get', methods: ['GET'])]
     public function show(PackRepository $packRepository, int $id): JsonResponse
     {
-        $pack = $packRepository->findOneExceptDeleted($id);
+        $pack = $packRepository->findOneExceptDeleted(['id' => $id]);
         if (!$pack) {
             return $this->error('e_notFound', 404);
         }
 
         return $this->responseOb($pack);
     }
+    #[Route('/api/packs', name: 'pack_update_all', methods: ['PUT'])]
+    public function updateAll(Request $request, PackRepository $packRepository): JsonResponse
+    {
+        $data = $request->toArray();
+        $enabled = $data["enabled"] ?? null;
+        
+        if (!isset($enabled)) {
+            return $this->error('e_missingArgument');
+        } else {
+            $packRepository->updateAll(['enabled' => $enabled]);
+            return $this->responseOb([]);
+        }
+
+    }
+
 
 }

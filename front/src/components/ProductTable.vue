@@ -27,7 +27,7 @@ const columns = computed(() => {
     { name: 'number', required: true, label: t('Number'), align: 'center', field: product => product.number, sortable: true },
     { name: 'created_at', required: true, label: t('createdAt'), align: 'center', field: product => product.created_at, sortable: true, format: dateFormat },
     { name: 'updated_at', required: true, label: t('lastUpdated'), align: 'center', field: product => product.updated_at, sortable: true, format: dateFormat },
-    { name: 'actions', required: false, label: t('Actions'), field: product => product.id, sortable: false}
+    { name: 'actions', required: false, label: t('Actions'), field: product => product, sortable: false}
     ])
   }
   return cols;
