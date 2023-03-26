@@ -1,8 +1,9 @@
 <script setup> 
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { productApi } from '../services/api';
 import { useI18n } from 'vue-i18n';
+import Dismissable from '../components/Dismissable.vue';
 
 const props = defineProps(['id'])
 const route = useRoute();
@@ -48,6 +49,11 @@ function saveProduct() {
 function updateError(fetchedError, defaultError) {
   error.value = fetchedError ? fetchedError : defaultError
 }
+
+//Clear success if error happened and vice-versa
+watch(success, (success) => {if(success) error.value = ''})
+watch(error, (error) => {if(error) success.value = ''})
+
 onMounted(() => {
   //If this is edit, fetch the product from backend
   if (props.id) {
@@ -71,13 +77,11 @@ onMounted(() => {
   <q-page id="main">
     <h2 v-if="props.id">{{ $t("editProduct") }}{{ props.id }}</h2>
     <h2 v-else>{{ $t("addNewProduct") }}</h2>
+    <!-- Success Banners -->
+    <Dismissable v-if="success == 'edited'" :text="$t('productEditedSuccessfully')" type="success" @dismiss="success=''" />
 
-    <div v-if="success == 'edited'">
-      {{ $t('productEditedSuccessfully') }}
-    </div>
-    <div v-if="error">
-      {{ $t(error) }}
-    </div>
+    <!-- Error Banner -->
+    <Dismissable v-if="error" :text="$t(error)" type="error" @dismiss="error=''" />  
 
     <q-form
     @submit="saveProduct"

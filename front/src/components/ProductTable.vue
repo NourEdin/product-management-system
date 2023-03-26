@@ -20,6 +20,7 @@ const columns = computed(() => {
   //Add these in all cases
   let cols = [
     { name: 'id', required: true, label: t('ID'), align: 'left', field: product => product.id, sortable: true },
+    { name: 'image', required: false, label: t('Image'), align: 'center', field: product => product, sortable: false, classes:'product-image', headerClasses: 'product-image' },
     { name: 'name', required: true, label: t('Name'), align: 'center', field: product => product.name, sortable: true },
   ]
   if (props.context == 'product') {
@@ -27,7 +28,7 @@ const columns = computed(() => {
     { name: 'number', required: true, label: t('Number'), align: 'center', field: product => product.number, sortable: true },
     { name: 'created_at', required: true, label: t('createdAt'), align: 'center', field: product => product.created_at, sortable: true, format: dateFormat },
     { name: 'updated_at', required: true, label: t('lastUpdated'), align: 'center', field: product => product.updated_at, sortable: true, format: dateFormat },
-    { name: 'actions', required: false, label: t('Actions'), field: product => product.id, sortable: false}
+    { name: 'actions', required: false, label: t('Actions'), field: product => product, sortable: false}
     ])
   }
   return cols;
@@ -90,6 +91,18 @@ function onRequest(props) {
 function requestServerInteraction() {
   tableRef.value.requestServerInteraction()
 }
+function getImageThumb(image) {
+  if (image && image.downloadUrl) {
+    let parts = image.downloadUrl.split('/');
+    //Remove last two parts of the url (the dimensions)
+    parts.splice(-2);
+    //Add the new dimension
+    parts.push('300');
+    return parts.join('/');
+  } else {
+    return "https://placehold.co/300?text=No%20Image";
+  }
+}
 onMounted(() => {
   // get initial data from server (1st page)
   requestServerInteraction();
@@ -125,6 +138,19 @@ defineExpose({
       <slot name="body-cell-actions" :value="props.value"></slot>
     </template>
 
+    <template v-slot:body-cell-image="props">
+      <q-tr class="product-image">
+        <img :src="getImageThumb(props.value.image)" :alt="$t('Product Image')"/>
+      </q-tr>
+    </template>
+
   </q-table>
 
 </template>
+
+<style lang="scss">
+.product-image {
+  text-align: center;
+  width: 300px;
+}
+</style>

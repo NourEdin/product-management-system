@@ -30,6 +30,9 @@ class Product
     #[ORM\Column(nullable: true)]
     private ?bool $deleted = null;
 
+    #[ORM\ManyToOne]
+    private ?Image $image = null;
+
     function __construct()
     {
         $this->created_at = new \DateTimeImmutable();
@@ -96,6 +99,18 @@ class Product
     public function setDeleted(?bool $deleted): self
     {
         $this->deleted = $deleted;
+
+        return $this;
+    }
+
+    public function getImage(): ?Image
+    {
+        return $this->image;
+    }
+
+    public function setImage(?Image $image): self
+    {
+        $this->image = $image;
 
         return $this;
     }

@@ -28,6 +28,7 @@ const en = {
     "editProduct": "Editing Product #",
     "productAddedSuccessfully": "Product added successfully",
     "productEditedSuccessfully": "Product edited successfully",
+    "productDeletedSuccessfully": "Product deleted successfully",
     "createdAt": "Created At",
     "lastUpdated": "Last Updated",
     "Not updated yet": "Not updated yet.",
@@ -41,14 +42,26 @@ const en = {
     "selectPackProducts": "Please select products included in this pack:",
     "Pack Products": "Pack Products",
     "editPack": "Edit Pack",
+    "packEditedSuccessfully": "Pack was edited successfully",
+    "packAddedSuccessfully": "Pack was added successfully",
+    "packDeletedSuccessfully": "Pack was deleted successfully",
+    "Enabled": "Enabled",
+    "Enable All": "Enable All",
+    "Disable All": "Disable All",
+    "Pack is disabled": "Pack is disabled",
+    "Pack is enabled": "Pack is enabled",
 
     //Error messages
     "e_duplicateNumber": "Error: Product number is already in use",
     "e_notFound": "Not Found!",
     "e_addMoreProducts": "Please add more products",
     "Please type something": "Please type something",
-    "e_productsNotFound": "You're trying to link the pack with non-existing products"
+    "e_productsNotFound": "You're trying to link the pack with non-existing products",
 
+
+    //General
+    "Cancel": "Cancel",
+    "Dismiss": "Dismiss",
 
 }
 
