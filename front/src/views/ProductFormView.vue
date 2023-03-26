@@ -49,6 +49,11 @@ function saveProduct() {
 function updateError(fetchedError, defaultError) {
   error.value = fetchedError ? fetchedError : defaultError
 }
+
+//Clear success if error happened and vice-versa
+watch(success, (success) => {if(success) error.value = ''})
+watch(error, (error) => {if(error) success.value = ''})
+
 onMounted(() => {
   //If this is edit, fetch the product from backend
   if (props.id) {

@@ -100,6 +100,11 @@ function onRequest(props) {
 
   getAll(params, { page, rowsPerPage, sortBy, descending })
 }
+
+//Clear success if error happened and vice-versa
+watch(success, (success) => {if(success) error.value = ''})
+watch(error, (error) => {if(error) success.value = ''})
+
 onMounted(() => {
   // get initial data from server (1st page)
   tableRef.value.requestServerInteraction()

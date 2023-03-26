@@ -14,6 +14,7 @@ const childRef = ref(null)
 
 const loading = ref(false)
 const success = ref('');
+const error = ref('');
 const deleteProduct = ref(0);
 const deletePrompt = ref(false);
 
@@ -29,6 +30,10 @@ function deleteOne (id)  {
     childRef.value.requestServerInteraction()
   });
 }
+
+//Clear success if error happened and vice-versa
+watch(success, (success) => {if(success) error.value = ''})
+watch(error, (error) => {if(error) success.value = ''})
 
 onMounted(() => {
   //If you find '?success' in the url, save it to the variable

@@ -65,6 +65,7 @@ function updateState(fetchedPack) {
   pack.value = fetchedPack
 }
 
+//Clear success if error happened and vice-versa
 watch(success, (success) => {if(success) error.value = ''})
 watch(error, (error) => {if(error) success.value = ''})
 
