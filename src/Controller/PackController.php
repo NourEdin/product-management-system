@@ -153,6 +153,7 @@ class PackController extends ApiController
             return $this->error('e_missingArgument');
         } else {
             $packRepository->updateAll(['enabled' => $enabled]);
+            return $this->responseOb([]);
         }
 
     }
