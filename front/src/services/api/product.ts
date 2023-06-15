@@ -1,8 +1,8 @@
-import { call } from './base'
+import { call, QueryParams } from './base'
 
 
 //Fetches the product list
-const list = async (options, onSuccess, onFailure = null) => {
+const list = async (options: QueryParams, onSuccess: Function, onFailure:Function = null) => {
     call(
       'products',
       {
@@ -14,7 +14,7 @@ const list = async (options, onSuccess, onFailure = null) => {
     )
   }
   //Calls the API to delete a product
-  const remove = async (id, onSuccess, onFailure = null) => {
+  const remove = async (id: number, onSuccess: Function, onFailure: Function = null) => {
     call(
       `product/${id}`,
       {
@@ -25,7 +25,7 @@ const list = async (options, onSuccess, onFailure = null) => {
     )
   }
   //Calls the API to fetch a single product
-  const get = async (id, onSuccess, onFailure = null) => {
+  const get = async (id: number, onSuccess: Function, onFailure:Function = null) => {
     call(
       `product/${id}`,
       {
@@ -36,7 +36,7 @@ const list = async (options, onSuccess, onFailure = null) => {
     )
   }
   //Calls the API to edit a product
-  const edit = async (id, product, onSuccess, onFailure = null) => {
+  const edit = async (id: number, product: Product, onSuccess: Function, onFailure: Function = null) => {
     call(
       `product/${id}`,
       {
@@ -52,7 +52,7 @@ const list = async (options, onSuccess, onFailure = null) => {
   }
   
   //Calls the API to create a product
-  const add = async (product,onSuccess, onFailure = null) => {
+  const add = async (product: Product,onSuccess: Function, onFailure: Function = null) => {
     call(
       'product',
       {
@@ -67,10 +67,16 @@ const list = async (options, onSuccess, onFailure = null) => {
     )
   }
 
+interface Product {
+  name: string;
+  number: string;
+}
+
+
 export {
     list,
     remove,
     edit,
     add,
-    get
+    get,
 }

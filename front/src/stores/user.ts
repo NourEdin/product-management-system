@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { logUserIn } from '@/services/api'
+import { logUserIn } from '@/services/api/'
 import { useStorage } from '@vueuse/core'
 
 export const useUserStore = defineStore('user', {
@@ -14,7 +14,7 @@ export const useUserStore = defineStore('user', {
     }
   },
   actions: {
-    async login(username, password, onSuccess) {
+    async login(username: string, password: string, onSuccess: Function) {
       this.error = "";
       this.token = "";
       
@@ -22,11 +22,11 @@ export const useUserStore = defineStore('user', {
       logUserIn(
         username, 
         password, 
-        data => {
+        (data: {token: string}) => {
           me.token = data.token
           onSuccess()
         },
-        data => me.error = data.message
+        (data: {message: string}) => me.error = data.message
         )
     },
     logout() {

@@ -1,8 +1,8 @@
-import { call } from './base'
+import { call, QueryParams } from './base'
 
 
 //Fetches the pack list
-const list = async (options, onSuccess, onFailure = null) => {
+const list = async (options: QueryParams, onSuccess: Function, onFailure: Function = null) => {
     call(
       'packs',
       {
@@ -14,7 +14,7 @@ const list = async (options, onSuccess, onFailure = null) => {
     )
   }
   //Calls the API to delete a pack
-  const remove = async (id, onSuccess, onFailure = null) => {
+  const remove = async (id: Number, onSuccess: Function, onFailure: Function = null) => {
     call(
       `pack/${id}`,
       {
@@ -25,7 +25,7 @@ const list = async (options, onSuccess, onFailure = null) => {
     )
   }
   //Calls the API to fetch a single pack
-  const get = async (id, onSuccess, onFailure = null) => {
+  const get = async (id: Number, onSuccess: Function, onFailure: Function = null) => {
     call(
       `pack/${id}`,
       {
@@ -36,7 +36,7 @@ const list = async (options, onSuccess, onFailure = null) => {
     )
   }
   //Calls the API to edit a pack
-  const edit = async (id, pack, onSuccess, onFailure = null) => {
+  const edit = async (id: Number, pack: Pack, onSuccess: Function, onFailure: Function = null) => {
     call(
       `pack/${id}`,
       {
@@ -53,7 +53,7 @@ const list = async (options, onSuccess, onFailure = null) => {
   }
   
   //Calls the API to create a pack
-  const add = async (pack, onSuccess, onFailure = null) => {
+  const add = async (pack: Pack, onSuccess: Function, onFailure: Function = null) => {
     call(
       'pack',
       {
@@ -70,7 +70,7 @@ const list = async (options, onSuccess, onFailure = null) => {
   }
 
   //Calls the API to batch update a pack
-  const batchUpdate = async (enabled, onSuccess, onFailure = null) => {
+  const batchUpdate = async (enabled: boolean, onSuccess: Function, onFailure: Function = null) => {
     call(
       `packs`,
       {
@@ -83,6 +83,12 @@ const list = async (options, onSuccess, onFailure = null) => {
       }
     )
   }
+
+interface Pack {
+  name: string,
+  productIds: Number[],
+  enabled: boolean
+}
 
 export {
     list,

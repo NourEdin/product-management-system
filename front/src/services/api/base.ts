@@ -1,14 +1,14 @@
-import { useUserStore } from "../../stores/user";
+import { useUserStore } from "@/stores/user";
 
 
 const apiBase = import.meta.env.VITE_BACKEND_API_BASE;
 
 //Makes the actual API call using fetch API
-const call = async (endpoint, options) => {
+const call = async (endpoint: string, options: ApiOptions) => {
   const userStore = useUserStore();
 
   //Preparing fetch API options
-  const fetchOptions = {
+  const fetchOptions: FetchOptions = {
     method: options.method,
     headers: {
       'Accept': 'application/json',
@@ -25,7 +25,7 @@ const call = async (endpoint, options) => {
   }
   //Append query parameters to the URL
   if(options.queryParams) {
-    const query = Object.keys(options.queryParams).map(function(key) {
+    const query = Object.keys(options.queryParams).map(function(key: keyof QueryParams) {
       return [key, options.queryParams[key]].map(encodeURIComponent).join("=");
     }).join("&");
     endpoint = `${endpoint}?${query}`
@@ -50,7 +50,7 @@ const call = async (endpoint, options) => {
 }
 
 //Calls the login endpoint to log in using username and password
-const login = async (username, password, onSuccess, onFailure) => {
+const login = async (username: string, password: string, onSuccess: Function, onFailure: Function) => {
   call(
     'login',
     {
@@ -59,15 +59,50 @@ const login = async (username, password, onSuccess, onFailure) => {
         username,
         password
       },
-      onSuccess,
-      onFailure
+      onSuccess: response => onSuccess(response),
+      onFailure: response => onFailure ? onFailure(response) : 0
     }
   )
 }
 
 
 
+interface ApiOptions {
+  method?: string;
+  noAuth?: boolean;
+  data?: object;
+  queryParams?: QueryParams;
+  onSuccess?: (data: ResponseObject) => void;
+  onFailure?: (reason: ResponseObject) => void;
+}
+
+interface ResponseObject {
+  data? : object;
+  error?: string;
+}
+
+interface FetchOptions {
+  method: string;
+  headers: {
+    Accept: string;
+    "Content-Type": string;
+    Authorization?: string;
+  };
+  body?: string;
+}
+
+export interface QueryParams{
+  term?: string;
+  sort?: string;
+  order?: 'desc'|'asc';
+  max?: number;
+  offset?: number;
+}
+
+interface ApiError {
+  message: string;
+}
 export {
     call,
-    login
+    login,
 }
