@@ -1,16 +1,19 @@
 
-<script setup>
-import { ref, watch, onMounted } from 'vue';
+<script setup lang="ts">
+import { ref, watch, onMounted, Ref } from 'vue';
 import { packApi } from '@/services/api';
 import { localizePath } from '@/i18n';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 import Dismissable from '../components/Dismissable.vue';
+import { Pack } from '@/services/api/pack';
+import { QueryParams } from '@/services/api/base';
+import { PaginationProps } from '@/components/ProductTable.vue';
 
 const route = useRoute()
 const {t, locale} = useI18n()
 const tableRef = ref()
-const packs = ref([])
+const packs:Ref<Pack[]> = ref([])
 const total = ref(0)
 //sorting, filtering, pagination options sent to API
 const pagination = ref({
@@ -22,22 +25,22 @@ const pagination = ref({
 })
 const filter = ref('')
 const loading = ref(false)
-const deletePack = ref({})
+const deletePack:Ref<Pack|undefined> = ref()
 const deletePrompt = ref(false)
 
 const columns = [
-  { name: 'id', required: true, label: t('ID'), align: 'left', field: pack => pack.id, sortable: true },
-  { name: 'name', required: true, label: t('Name'), align: 'center', field: pack => pack.name, sortable: true },
-  { name: 'products', required: true, label: t('Products'), align: 'center', field: pack => pack.products, sortable: false },
-  { name: 'enabled', required: true, label: t('Enabled'), align: 'center', field: pack => pack.enabled, sortable: false },
-  { name: 'created_at', required: true, label: t('createdAt'), align: 'center', field: pack => pack.created_at, sortable: true, format: dateFormat },
-  { name: 'updated_at', required: true, label: t('lastUpdated'), align: 'center', field: pack => pack.updated_at, sortable: true, format: dateFormat },
-  { name: 'actions', required: false, label: t('Actions'), align: 'center', field: pack => pack, sortable: false}
+  { name: 'id', required: true, label: t('ID'), align: 'left', field: (pack: Pack) => pack.id, sortable: true },
+  { name: 'name', required: true, label: t('Name'), align: 'center', field: (pack: Pack) => pack.name, sortable: true },
+  { name: 'products', required: true, label: t('Products'), align: 'center', field: (pack: Pack) => pack.products, sortable: false },
+  { name: 'enabled', required: true, label: t('Enabled'), align: 'center', field: (pack: Pack) => pack.enabled, sortable: false },
+  { name: 'created_at', required: true, label: t('createdAt'), align: 'center', field: (pack: Pack) => pack.created_at, sortable: true, format: dateFormat },
+  { name: 'updated_at', required: true, label: t('lastUpdated'), align: 'center', field: (pack: Pack) => pack.updated_at, sortable: true, format: dateFormat },
+  { name: 'actions', required: false, label: t('Actions'), align: 'center', field: (pack: Pack) => pack, sortable: false}
 ]
 const success = ref('');
 const error = ref('');
 
-function dateFormat(date) {
+function dateFormat(date: string) {
   //If updated date is empty, show something else.
   //Created date always has a value
   if (!date) {
@@ -47,16 +50,16 @@ function dateFormat(date) {
   const dateOb = new Date(date); 
   return dateOb.toLocaleString(locale.value);
 }
-function deleteOne (id)  {
+function deleteOne (id: number)  {
   console.log("Deleting pack", id);
   packApi.remove(id, () => {
     tableRef.value.requestServerInteraction()
   });
 }
-function getAll(params, props) {
+function getAll(params: QueryParams, props: PaginationProps) {
   packApi.list(
     params,
-    (data) => {
+    (data: {packs: Pack[], total: number}) => {
       packs.value = data.packs
       total.value = data.total
 
@@ -68,29 +71,29 @@ function getAll(params, props) {
       pagination.value.descending = props.descending
   })
 }
-function updateAll(enabled) {
+function updateAll(enabled: boolean) {
   packApi.batchUpdate(
     enabled, 
     () => {
       success.value = t("All packs were enabled successfully")
       tableRef.value.requestServerInteraction()
     },
-    (errorMsg) => {
+    (errorMsg:string) => {
       error.value = errorMsg 
     }
   )
 }
-function openConfirmDelete(pack) {
+function openConfirmDelete(pack: Pack) {
   deletePack.value = pack
   deletePrompt.value = true
 }
-function onRequest(props) {
+function onRequest(props: {pagination: PaginationProps, filter: string}) {
   const { page, rowsPerPage, sortBy, descending } = props.pagination
   const filter = props.filter
 
   // loading.value = true
 
-  const params = {
+  const params: QueryParams = {
     term: filter,
     sort: sortBy,
     order: descending ? 'desc' : 'asc',
@@ -111,7 +114,7 @@ onMounted(() => {
 
   //If you find '?success' in the url, save it to the variable
   if (route.query.success) {
-    success.value = route.query.success
+    success.value = route.query.success as string
   }
 })
 
@@ -189,14 +192,14 @@ onMounted(() => {
         <q-card-section class="row items-center">
           <span class="q-ml-sm">{{$t("Are you sure you want to delete this pack?")}}    
             <br />
-              #{{ deletePack.id }} - {{ deletePack.name }} ({{ deletePack.products.length }} {{ $t("Products") }})
+              #{{ deletePack?.id }} - {{ deletePack?.name }} ({{ deletePack?.products?.length }} {{ $t("Products") }})
           </span>
           
         </q-card-section>
 
         <q-card-actions align="right">
           <q-btn flat :label="$t('Cancel')" color="primary" v-close-popup />
-          <q-btn flat :label="$t('Delete')" color="primary" @click="deleteOne(deletePack.id)" v-close-popup />
+          <q-btn flat :label="$t('Delete')" color="primary" @click="deleteOne(deletePack?.id!)" v-close-popup />
         </q-card-actions>
       </q-card>
     </q-dialog>

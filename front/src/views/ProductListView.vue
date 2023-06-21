@@ -1,29 +1,30 @@
 
-<script setup>
-import { ref, watch, onMounted } from 'vue';
+<script setup lang="ts">
+import { ref, watch, onMounted, Ref } from 'vue';
 import { productApi } from '@/services/api';
 import { localizePath } from '@/i18n';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 import ProductTable from '../components/ProductTable.vue';
 import Dismissable from '../components/Dismissable.vue';
+import { Product } from '@/services/api/product';
 
 const route = useRoute()
 const {t, locale} = useI18n()
-const childRef = ref(null)
+const childRef = ref()
 
 const loading = ref(false)
 const success = ref('');
 const error = ref('');
-const deleteProduct = ref(0);
+const deleteProduct:Ref<Product|undefined> = ref();
 const deletePrompt = ref(false);
 
-function openConfirmDelete(pack) {
-  deleteProduct.value = pack
+function openConfirmDelete(product: Product) {
+  deleteProduct.value = product
   deletePrompt.value = true
 }
 
-function deleteOne (id)  {
+function deleteOne (id: number)  {
   console.log("Deleting product", id);
   productApi.remove(id, () => {
     success.value = 'deleted'
@@ -38,7 +39,7 @@ watch(error, (error) => {if(error) success.value = ''})
 onMounted(() => {
   //If you find '?success' in the url, save it to the variable
   if (route.query.success) {
-    success.value = route.query.success
+    success.value = route.query.success as string
   }
 })
 
@@ -79,14 +80,14 @@ onMounted(() => {
         <q-card-section class="row items-center">
           <span class="q-ml-sm">{{$t("Are you sure you want to delete this product?")}}    
             <br />
-              #{{ deleteProduct.id }} - {{ deleteProduct.name }} 
+              #{{ deleteProduct?.id }} - {{ deleteProduct?.name }} 
           </span>
           
         </q-card-section>
 
         <q-card-actions align="right">
           <q-btn flat :label="$t('Cancel')" color="primary" v-close-popup />
-          <q-btn flat :label="$t('Delete')" color="primary" @click="deleteOne(deleteProduct.id)" v-close-popup />
+          <q-btn flat :label="$t('Delete')" color="primary" @click="deleteOne(deleteProduct?.id!)" v-close-popup />
         </q-card-actions>
       </q-card>
     </q-dialog>

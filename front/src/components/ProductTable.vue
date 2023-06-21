@@ -113,7 +113,7 @@ defineExpose({
   requestServerInteraction
 })
 
-interface PaginationProps {
+export interface PaginationProps {
   page: number, 
   rowsPerPage: number, 
   sortBy: string, 

@@ -1,15 +1,16 @@
-<script setup> 
-import { onMounted, ref, watch } from 'vue';
+<script setup lang="ts"> 
+import { Ref, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { productApi } from '../services/api';
 import { useI18n } from 'vue-i18n';
 import Dismissable from '../components/Dismissable.vue';
+import { Product } from '@/services/api/product';
 
 const props = defineProps(['id'])
 const route = useRoute();
 const { locale } = useI18n();
 const router = useRouter()
-const product = ref({
+const product:Ref<Product> = ref({
   id: 0,
   name: '',
   number: ''
@@ -24,29 +25,29 @@ function saveProduct() {
     productApi.edit(
       props.id,
       product.value,
-      (fetchedProduct) => {
+      (fetchedProduct: Product) => {
         console.log("Edited product. ressult", fetchedProduct)
         product.value = fetchedProduct
         success.value = 'edited'
       },
-      (fetchedError) => {
+      (fetchedError: string) => {
         updateError(fetchedError, 'notSavedError')
       }
     )
   } else { //Case of add
     productApi.add(
       product.value,
-      (fetchedProduct) => {
+      (fetchedProduct: Product) => {
         console.log("Added product. result", fetchedProduct)
         router.push(`/${locale.value}/products?success=added`)
       },
-      (fetchedError) => {
+      (fetchedError: string) => {
         updateError(fetchedError, 'notAdded')
       }
     )
   }
 }
-function updateError(fetchedError, defaultError) {
+function updateError(fetchedError: string, defaultError: string) {
   error.value = fetchedError ? fetchedError : defaultError
 }
 
@@ -58,15 +59,15 @@ onMounted(() => {
   //If this is edit, fetch the product from backend
   if (props.id) {
     productApi.get(props.id,
-      (fetchedProduct) => {product.value = fetchedProduct},
-      (fetchedError) => {
+      (fetchedProduct: Product) => {product.value = fetchedProduct},
+      (fetchedError: string) => {
         updateError(fetchedError, 'notFoundError')
       }
     )
   }
   //If you find '?success' in the url, save it to the variable
   if (route.query.success) {
-    success.value = route.query.success
+    success.value = route.query.success as string
   }
 })
 
@@ -93,7 +94,7 @@ onMounted(() => {
         v-model="product.name"
         :label="$t('Product name')"
         lazy-rules
-        :rules="[ val => val && val.length > 0 || $t('Please type something')]"
+        :rules="[ (val: string) => val && val.length > 0 || $t('Please type something')]"
       />
 
       <q-input

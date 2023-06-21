@@ -1,4 +1,5 @@
 import { call, QueryParams } from './base'
+import { Product } from './product'
 
 
 //Fetches the pack list
@@ -84,10 +85,14 @@ const list = async (options: QueryParams, onSuccess: Function, onFailure: Functi
     )
   }
 
-interface Pack {
+export interface Pack {
+  id?: number,
   name: string,
-  productIds: Number[],
-  enabled: boolean
+  productIds?: Number[],
+  enabled: boolean,
+  products?: Product[],
+  created_at?: string,
+  updated_at?: string
 }
 
 export {

@@ -1,7 +1,9 @@
 <script setup lang="ts"> 
-import { onMounted, ref, watch } from 'vue';
+import { Ref, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { packApi } from '../services/api';
+import { Pack } from '@/services/api/pack';
+import { Product } from '@/services/api/product';
 import { useI18n } from 'vue-i18n';
 import ProductTable from '../components/ProductTable.vue';
 import Dismissable from '../components/Dismissable.vue';
@@ -10,7 +12,7 @@ const props = defineProps(['id'])
 const route = useRoute();
 const { t, locale } = useI18n();
 const router = useRouter()
-const pack = ref({
+const pack:Ref<Pack> = ref({
   id: 0,
   name: '',
   products: [],
@@ -24,7 +26,10 @@ function savePack() {
   //Validating the pack
   //Note: Name is validated in the table component.
   //Validating number of products
-  if (pack.value.products.length < 2) {
+  let addedProd = pack.value.products?.length;
+  if (!addedProd) addedProd = 0;
+
+  if (addedProd < 2) {
     error.value = 'e_addMoreProducts'
     return;
   }
@@ -33,10 +38,10 @@ function savePack() {
       props.id,
       {
         name: pack.value.name,
-        productIds: pack.value.products.map(product => product.id),
+        productIds: pack.value.products?.map(product => product.id!),
         enabled: pack.value.enabled
       },
-      fetchedPack => {
+      (fetchedPack:Pack) => {
         updateState(fetchedPack)
         success.value = 'edited'
         window.scrollTo(0,0)
@@ -47,21 +52,21 @@ function savePack() {
     packApi.add(
       {
         name: pack.value.name,
-        productIds: pack.value.products.map(product => product.id),
+        productIds: pack.value.products?.map((product:Product) => product.id!),
         enabled: pack.value.enabled
       },
-      (fetchedPack) => {
+      (fetchedPack:Pack) => {
         router.push(`/${locale.value}/packs?success=added`)
       },
       updateError
     )
   }
 }
-function updateError(fetchedError) {
+function updateError(fetchedError: string) {
   error.value = fetchedError ? fetchedError : 'notFoundError'
 }
 //Updates the ref pack and selectedProducts
-function updateState(fetchedPack) {
+function updateState(fetchedPack: Pack) {
   pack.value = fetchedPack
 }
 
@@ -80,7 +85,7 @@ onMounted(() => {
   }
   //If you find '?success' in the url, save it to the variable
   if (route.query.success) {
-    success.value = route.query.success
+    success.value = route.query.success as string
   }
 })
 
@@ -108,7 +113,7 @@ onMounted(() => {
         v-model="pack.name"
         :label="$t('Pack name')"
         lazy-rules
-        :rules="[ val => val && val.length > 0 || $t('Please type something')]"
+        :rules="[ (val:string) => val && val.length > 0 || $t('Please type something')]"
       />
       <div id="enabled-btn">
         <q-toggle 
