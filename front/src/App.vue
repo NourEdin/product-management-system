@@ -12,9 +12,9 @@ const userStore = useUserStore()
 const { isLoggedIn } = storeToRefs(userStore)
 
 //If use is logged out, redirect to login page
-watch(isLoggedIn, (isLoggedIn) => {
+watch(isLoggedIn, (isLoggedIn, wasLoggedIn) => {
   console.log("logged in state changed", isLoggedIn)
-  if (isLoggedIn) {
+  if (!isLoggedIn) {
     console.log("User has logged out")
     router.push(localizePath('/login'))
   } else {
