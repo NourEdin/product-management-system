@@ -1,4 +1,4 @@
-const ar = {
+const ar: {readonly [index: string]: string} = {
     "appTitle": "نظام إدارة المنتجات",
     //Nav
     "Home": "الرئيسية",

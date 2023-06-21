@@ -1,4 +1,4 @@
-<script setup> 
+<script setup lang="ts"> 
 import { onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { packApi } from '../services/api';

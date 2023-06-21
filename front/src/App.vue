@@ -1,8 +1,8 @@
-<script setup>
+<script setup lang="ts">
 import { watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
-import Layout from './components/Layout.vue';
+import Layout from '@/components/Layout.vue';
 import { useUserStore } from './stores/user';
 import { localizePath } from '@/i18n'
 
@@ -14,7 +14,7 @@ const { isLoggedIn } = storeToRefs(userStore)
 //If use is logged out, redirect to login page
 watch(isLoggedIn, (isLoggedIn) => {
   console.log("logged in state changed", isLoggedIn)
-  if (isLoggedIn == "") {
+  if (isLoggedIn) {
     console.log("User has logged out")
     router.push(localizePath('/login'))
   } else {

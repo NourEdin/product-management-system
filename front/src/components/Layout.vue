@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { computed } from 'vue'
 import { RouterView, RouterLink, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n';
@@ -35,7 +35,7 @@ function logout() {
 
           <q-space />
 
-          <q-tabs v-model="tab" shrink>
+          <q-tabs shrink>
             <q-route-tab v-for="lang, i in navLanguages" :key="i"  :to="`/${lang.locale}`" :name="lang.locale" :label="lang.label" />
             <q-separator dark vertical inset />
             <q-tab v-if="isLoggedIn" @click="logout" name="logout" :label="$t('logout')" />

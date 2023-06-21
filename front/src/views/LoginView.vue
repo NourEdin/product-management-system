@@ -1,5 +1,5 @@
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useUserStore } from '../stores/user';
@@ -14,7 +14,7 @@ const error = computed(() => userStore.error)
 
 async function login() {
   userStore.login(username.value, password.value, () => {
-    router.push(route.query.redirect || '/')
+    router.push(route.query.redirect as string || '/')
   });
 }
 </script>
@@ -33,7 +33,7 @@ async function login() {
         v-model="username"
         :label="$t('Username')"
         lazy-rules
-        :rules="[ val => val && val.length > 0 || $t('Please type something')]"
+        :rules="[ (val:string) => val && val.length > 0 || $t('Please type something')]"
       />
 
       <q-input
@@ -43,7 +43,7 @@ async function login() {
         :label="$t('Password')"
         lazy-rules
         :rules="[
-          val => val !== null && val !== '' || $t('Please enter a password')
+          (val: string) => val !== null && val !== '' || $t('Please enter a password')
         ]"
       />
       <div>

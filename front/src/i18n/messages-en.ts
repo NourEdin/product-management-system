@@ -1,4 +1,4 @@
-const en = {
+const en: {readonly [index: string]: string} = {
     "appTitle": "Product Management System",
     //Nav
     "Home": "Home",
@@ -63,6 +63,6 @@ const en = {
     "Cancel": "Cancel",
     "Dismiss": "Dismiss",
 
-}
+} 
 
 export default en

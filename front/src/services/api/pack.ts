@@ -2,7 +2,7 @@ import { call, QueryParams } from './base'
 
 
 //Fetches the pack list
-const list = async (options: QueryParams, onSuccess: Function, onFailure: Function = null) => {
+const list = async (options: QueryParams, onSuccess: Function, onFailure: Function|null = null) => {
     call(
       'packs',
       {
@@ -14,7 +14,7 @@ const list = async (options: QueryParams, onSuccess: Function, onFailure: Functi
     )
   }
   //Calls the API to delete a pack
-  const remove = async (id: Number, onSuccess: Function, onFailure: Function = null) => {
+  const remove = async (id: Number, onSuccess: Function, onFailure: Function|null = null) => {
     call(
       `pack/${id}`,
       {
@@ -25,7 +25,7 @@ const list = async (options: QueryParams, onSuccess: Function, onFailure: Functi
     )
   }
   //Calls the API to fetch a single pack
-  const get = async (id: Number, onSuccess: Function, onFailure: Function = null) => {
+  const get = async (id: Number, onSuccess: Function, onFailure: Function|null = null) => {
     call(
       `pack/${id}`,
       {
@@ -36,7 +36,7 @@ const list = async (options: QueryParams, onSuccess: Function, onFailure: Functi
     )
   }
   //Calls the API to edit a pack
-  const edit = async (id: Number, pack: Pack, onSuccess: Function, onFailure: Function = null) => {
+  const edit = async (id: Number, pack: Pack, onSuccess: Function, onFailure: Function|null = null) => {
     call(
       `pack/${id}`,
       {
@@ -53,7 +53,7 @@ const list = async (options: QueryParams, onSuccess: Function, onFailure: Functi
   }
   
   //Calls the API to create a pack
-  const add = async (pack: Pack, onSuccess: Function, onFailure: Function = null) => {
+  const add = async (pack: Pack, onSuccess: Function, onFailure: Function|null = null) => {
     call(
       'pack',
       {
@@ -70,7 +70,7 @@ const list = async (options: QueryParams, onSuccess: Function, onFailure: Functi
   }
 
   //Calls the API to batch update a pack
-  const batchUpdate = async (enabled: boolean, onSuccess: Function, onFailure: Function = null) => {
+  const batchUpdate = async (enabled: boolean, onSuccess: Function, onFailure: Function|null = null) => {
     call(
       `packs`,
       {

@@ -25,10 +25,13 @@ const call = async (endpoint: string, options: ApiOptions) => {
   }
   //Append query parameters to the URL
   if(options.queryParams) {
-    const query = Object.keys(options.queryParams).map(function(key: keyof QueryParams) {
-      return [key, options.queryParams[key]].map(encodeURIComponent).join("=");
-    }).join("&");
-    endpoint = `${endpoint}?${query}`
+    let querySeg: string[] = [];
+    let key: keyof QueryParams;
+    for (key in options.queryParams) {
+      if (options.queryParams[key])
+        querySeg.push(`${key}=${options.queryParams[key]}`);  
+    }
+    endpoint = `${endpoint}?${querySeg.join('&')}`
   }
 
   userStore.startLoading();
@@ -82,7 +85,7 @@ interface ResponseObject {
 }
 
 interface FetchOptions {
-  method: string;
+  method?: string;
   headers: {
     Accept: string;
     "Content-Type": string;

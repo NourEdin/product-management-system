@@ -2,7 +2,7 @@ import { call, QueryParams } from './base'
 
 
 //Fetches the product list
-const list = async (options: QueryParams, onSuccess: Function, onFailure:Function = null) => {
+const list = async (options: QueryParams, onSuccess: Function, onFailure: Function|null = null) => {
     call(
       'products',
       {
@@ -14,7 +14,7 @@ const list = async (options: QueryParams, onSuccess: Function, onFailure:Functio
     )
   }
   //Calls the API to delete a product
-  const remove = async (id: number, onSuccess: Function, onFailure: Function = null) => {
+  const remove = async (id: number, onSuccess: Function, onFailure: Function|null = null) => {
     call(
       `product/${id}`,
       {
@@ -25,7 +25,7 @@ const list = async (options: QueryParams, onSuccess: Function, onFailure:Functio
     )
   }
   //Calls the API to fetch a single product
-  const get = async (id: number, onSuccess: Function, onFailure:Function = null) => {
+  const get = async (id: number, onSuccess: Function, onFailure: Function|null = null) => {
     call(
       `product/${id}`,
       {
@@ -36,7 +36,7 @@ const list = async (options: QueryParams, onSuccess: Function, onFailure:Functio
     )
   }
   //Calls the API to edit a product
-  const edit = async (id: number, product: Product, onSuccess: Function, onFailure: Function = null) => {
+  const edit = async (id: number, product: Product, onSuccess: Function, onFailure: Function|null = null) => {
     call(
       `product/${id}`,
       {
@@ -52,7 +52,7 @@ const list = async (options: QueryParams, onSuccess: Function, onFailure:Functio
   }
   
   //Calls the API to create a product
-  const add = async (product: Product,onSuccess: Function, onFailure: Function = null) => {
+  const add = async (product: Product,onSuccess: Function, onFailure: Function|null = null) => {
     call(
       'product',
       {
@@ -67,9 +67,12 @@ const list = async (options: QueryParams, onSuccess: Function, onFailure:Functio
     )
   }
 
-interface Product {
+export interface Product {
   name: string;
   number: string;
+  id?: number;
+  created_at?: string;
+  updated_at?: string;
 }
 
 

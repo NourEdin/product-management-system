@@ -1,5 +1,5 @@
 import { createI18n } from 'vue-i18n'
-import ar from './messages-ar'
+import ar from './messages-ar' 
 import en from './messages-en'
 
 export const languages = [
@@ -23,12 +23,12 @@ export const i18n = createI18n({
     }
 })
 //Converts a normal route path to a localized one
-export function localizePath(to) {
+export function localizePath(to: string) {
     const locale = i18n.global.locale.value 
     return to == '/' ? '/' + locale : '/' + locale + to
 }
 
-export function setLocale(lang) {
+export function setLocale(lang: "en"|"ar") {
     i18n.global.locale.value = lang
     // setDocumentAttributesFor(lang)
 }

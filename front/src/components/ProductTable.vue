@@ -1,7 +1,8 @@
-<script setup>
-import { ref, computed, onMounted } from 'vue';
+<script setup lang="ts">
+import { ref, computed, onMounted, Ref } from 'vue';
 import { productApi } from '@/services/api';
-import { localizePath } from '@/i18n';
+import { Product } from '@/services/api/product'
+import { QueryParams } from '@/services/api/base';
 import { useI18n } from 'vue-i18n';
 
 const props = defineProps(['context', 'title', 'selected'])
@@ -18,24 +19,24 @@ const selected = computed({
 const selectable = computed(() => props.context == 'pack')
 const columns = computed(() => {
   //Add these in all cases
-  let cols = [
-    { name: 'id', required: true, label: t('ID'), align: 'left', field: product => product.id, sortable: true },
-    { name: 'image', required: false, label: t('Image'), align: 'center', field: product => product, sortable: false, classes:'product-image', headerClasses: 'product-image' },
-    { name: 'name', required: true, label: t('Name'), align: 'center', field: product => product.name, sortable: true },
+  let cols: TableCol[] = [
+    { name: 'id', required: true, label: t('ID'), align: 'left', field: (product: Product) => product.id, sortable: true },
+    { name: 'image', required: false, label: t('Image'), align: 'center', field: (product: Product) => product, sortable: false, classes:'product-image', headerClasses: 'product-image' },
+    { name: 'name', required: true, label: t('Name'), align: 'center', field: (product: Product) => product.name, sortable: true },
   ]
   if (props.context == 'product') {
     cols.push(...[
-    { name: 'number', required: true, label: t('Number'), align: 'center', field: product => product.number, sortable: true },
-    { name: 'created_at', required: true, label: t('createdAt'), align: 'center', field: product => product.created_at, sortable: true, format: dateFormat },
-    { name: 'updated_at', required: true, label: t('lastUpdated'), align: 'center', field: product => product.updated_at, sortable: true, format: dateFormat },
-    { name: 'actions', required: false, label: t('Actions'), field: product => product, sortable: false}
+    { name: 'number', required: true, label: t('Number'), align: 'center', field: (product: Product) => product.number, sortable: true },
+    { name: 'created_at', required: true, label: t('createdAt'), align: 'center', field: (product: Product) => product.created_at, sortable: true, format: dateFormat },
+    { name: 'updated_at', required: true, label: t('lastUpdated'), align: 'center', field: (product: Product) => product.updated_at, sortable: true, format: dateFormat },
+    { name: 'actions', required: false, label: t('Actions'), field: (product: Product) => product, sortable: false}
     ])
   }
   return cols;
 })
 const {t, locale} = useI18n()
 const tableRef = ref()
-const products = ref([])
+const products: Ref<Product[]> = ref([])
 const total = ref(0)
 //sorting, filtering, pagination options sent to API
 const pagination = ref({
@@ -47,7 +48,7 @@ const pagination = ref({
 })
 const filter = ref('')
 
-function dateFormat(date) {
+function dateFormat(date: string) {
   //If updated date is empty, show something else.
   //Created date always has a value
   if (!date) {
@@ -57,10 +58,10 @@ function dateFormat(date) {
   const dateOb = new Date(date); 
   return dateOb.toLocaleString(locale.value);
 }
-function getAll(params, props) {
+function getAll(params: QueryParams, props: PaginationProps) {
   productApi.list(
     params,
-    (data) => {
+    (data: {products: Product[], total: number}) => {
       products.value = data.products
       total.value = data.total
 
@@ -72,13 +73,13 @@ function getAll(params, props) {
       pagination.value.descending = props.descending
   })
 }
-function onRequest(props) {
+function onRequest(props: {pagination: PaginationProps, filter: string}) {
   const { page, rowsPerPage, sortBy, descending } = props.pagination
   const filter = props.filter
 
   // loading.value = true
 
-  const params = {
+  const params: QueryParams = {
     term: filter,
     sort: sortBy,
     order: descending ? 'desc' : 'asc',
@@ -91,7 +92,7 @@ function onRequest(props) {
 function requestServerInteraction() {
   tableRef.value.requestServerInteraction()
 }
-function getImageThumb(image) {
+function getImageThumb(image: {downloadUrl: string}) {
   if (image && image.downloadUrl) {
     let parts = image.downloadUrl.split('/');
     //Remove last two parts of the url (the dimensions)
@@ -111,6 +112,25 @@ onMounted(() => {
 defineExpose({
   requestServerInteraction
 })
+
+interface PaginationProps {
+  page: number, 
+  rowsPerPage: number, 
+  sortBy: string, 
+  descending: boolean
+}
+
+interface TableCol {
+  name: string;
+  required?: boolean;
+  label?: string;
+  align?: string;
+  field?: (product: Product) => unknown;
+  sortable?: boolean;
+  classes?: string;
+  headerClasses?: string;
+  format?: (data: string) => string;
+}
 </script>
 <template>
   <q-table
